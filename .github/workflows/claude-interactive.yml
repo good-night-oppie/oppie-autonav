@@ -1,0 +1,48 @@
+# Claude Interactive PR Assistant
+name: Claude Interactive Assistant
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  claude-interactive:
+    # Only run when @claude is mentioned in PR comments
+    if: |
+      github.event.issue.pull_request && 
+      contains(github.event.comment.body, '@claude')
+    
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Run Claude Interactive Review
+        uses: anthropics/claude-code-action@beta
+        with:
+          # Use OAuth token from organization secrets
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          
+          # Optional: fallback to API key
+          claude_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          
+          # Use Claude Opus for thorough reviews
+          model: "claude-opus-4-1-20250805"
+          
+          # Allow extensive tool usage
+          allowed_tools: "Bash,Grep,Read,Write,Edit"
+          
+          timeout_minutes: "60"
