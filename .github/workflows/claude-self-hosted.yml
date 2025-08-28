@@ -34,8 +34,9 @@ jobs:
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
       github.event_name == 'workflow_dispatch'
     
-    # Use self-hosted runner with Claude credentials
-    runs-on: [self-hosted, linux, claude-runner]
+    # Use GitHub-hosted runner (change to self-hosted if available)
+    runs-on: ubuntu-latest
+    # For self-hosted: runs-on: [self-hosted, linux, claude-runner]
     
     permissions:
       contents: write
@@ -77,64 +78,12 @@ jobs:
           echo "complexity=$COMPLEXITY" >> $GITHUB_OUTPUT
           echo "domain=$DOMAIN" >> $GITHUB_OUTPUT
       
-      - name: Verify Claude Credentials
-        id: verify_creds
-        run: |
-          # Check if credentials exist on self-hosted runner
-          if [ -f "$HOME/.claude/credentials.json" ]; then
-            echo "Found local Claude credentials"
-            echo "has_local_creds=true" >> $GITHUB_OUTPUT
-            
-            # Extract tokens from credentials file
-            ACCESS_TOKEN=$(jq -r '.claudeAiOauth.accessToken' "$HOME/.claude/credentials.json")
-            REFRESH_TOKEN=$(jq -r '.claudeAiOauth.refreshToken' "$HOME/.claude/credentials.json")
-            
-            # Check token expiry
-            EXPIRES_AT=$(jq -r '.claudeAiOauth.expiresAt' "$HOME/.claude/credentials.json")
-            CURRENT_TIME=$(date +%s%3N)
-            
-            if [ "$CURRENT_TIME" -lt "$EXPIRES_AT" ]; then
-              echo "Tokens are valid"
-              echo "tokens_valid=true" >> $GITHUB_OUTPUT
-            else
-              echo "Tokens expired, will use refresh token"
-              echo "tokens_valid=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "No local credentials, checking organization secrets"
-            echo "has_local_creds=false" >> $GITHUB_OUTPUT
-          fi
-      
-      - name: Setup Claude Credentials
-        if: steps.verify_creds.outputs.has_local_creds != 'true'
-        run: |
-          # Create credentials from organization secrets
-          mkdir -p "$HOME/.claude"
-          
-          # Use organization secrets to create credentials file
-          cat > "$HOME/.claude/credentials.json" << 'EOF'
-          {
-            "claudeAiOauth": {
-              "accessToken": "${{ secrets.CLAUDE_ACCESS_TOKEN }}",
-              "refreshToken": "${{ secrets.CLAUDE_REFRESH_TOKEN }}",
-              "expiresAt": ${{ secrets.CLAUDE_TOKEN_EXPIRY }},
-              "scopes": [
-                "user:inference",
-                "user:profile"
-              ]
-            }
-          }
-          EOF
-          
-          chmod 600 "$HOME/.claude/credentials.json"
-          echo "Claude credentials configured from organization secrets"
       
       - name: Run Claude Interactive Review
         uses: anthropics/claude-code-action@beta
         with:
-          # Use OAuth tokens from organization secrets or local credentials
-          claude_code_oauth_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
-          claude_code_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+          # Use OAuth token from repository secrets
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           
           # Use Claude Opus for thorough reviews
           model: "claude-opus-4-1-20250805"
@@ -215,8 +164,9 @@ jobs:
     # Auto-review on PR changes
     if: github.event_name == 'pull_request'
     
-    # Use self-hosted runner
-    runs-on: [self-hosted, linux, claude-runner]
+    # Use GitHub-hosted runner (change to self-hosted if available)
+    runs-on: ubuntu-latest
+    # For self-hosted: runs-on: [self-hosted, linux, claude-runner]
     
     permissions:
       contents: read
@@ -261,28 +211,6 @@ jobs:
           
           echo "Detected complexity: $COMPLEXITY/10 (Files: $FILE_COUNT, Lines: $LINE_COUNT)"
       
-      - name: Setup Claude Credentials
-        run: |
-          # Ensure credentials are available
-          if [ ! -f "$HOME/.claude/credentials.json" ]; then
-            mkdir -p "$HOME/.claude"
-            
-            cat > "$HOME/.claude/credentials.json" << 'EOF'
-            {
-              "claudeAiOauth": {
-                "accessToken": "${{ secrets.CLAUDE_ACCESS_TOKEN }}",
-                "refreshToken": "${{ secrets.CLAUDE_REFRESH_TOKEN }}",
-                "expiresAt": ${{ secrets.CLAUDE_TOKEN_EXPIRY }},
-                "scopes": [
-                  "user:inference",
-                  "user:profile"
-                ]
-              }
-            }
-          EOF
-            
-            chmod 600 "$HOME/.claude/credentials.json"
-          fi
       
       - name: Run Claude Automated Review
         id: claude-review
@@ -383,7 +311,7 @@ jobs:
     # Run tests in parallel with review
     if: github.event_name == 'pull_request'
     
-    runs-on: [self-hosted, linux, claude-runner]
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout repository
