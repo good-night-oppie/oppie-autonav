@@ -59,7 +59,10 @@ jobs:
             REVIEW_TYPE="${{ github.event.inputs.review_type }}"
           else
             PR_NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
-            PR_BODY="${{ github.event.issue.body || github.event.pull_request.body }}"
+            PR_BODY=$(cat <<'EOF'
+          ${{ github.event.issue.body || github.event.pull_request.body }}
+          EOF
+            )
             COMPLEXITY=$(echo "$PR_BODY" | grep -oP '[Cc]omplexity:\s*\K\d+' | head -1 || echo "5")
             DOMAIN=$(echo "$PR_BODY" | grep -oP '[Dd]omain:\s*\K\w+' | head -1 || echo "general")
             
