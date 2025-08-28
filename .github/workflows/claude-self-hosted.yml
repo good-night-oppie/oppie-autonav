@@ -1,0 +1,497 @@
+name: Claude Self-Hosted Code Review
+
+on:
+  # Trigger on PR comments mentioning @claude
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+  
+  # Auto-review on PR open/sync
+  pull_request:
+    types: [opened, synchronize]
+  
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to review (optional)'
+        required: false
+        default: ''
+      review_type:
+        description: 'Review type: quick, standard, thorough'
+        required: false
+        default: 'standard'
+
+jobs:
+  claude-interactive-review:
+    # Run when @claude is mentioned
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      github.event_name == 'workflow_dispatch'
+    
+    # Use self-hosted runner with Claude credentials
+    runs-on: [self-hosted, linux, claude-runner]
+    
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better context
+      
+      - name: Extract Review Context
+        id: context
+        run: |
+          # Extract complexity from PR body or use default
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            PR_NUMBER="${{ github.event.inputs.pr_number }}"
+            REVIEW_TYPE="${{ github.event.inputs.review_type }}"
+          else
+            PR_NUMBER="${{ github.event.issue.number || github.event.pull_request.number }}"
+            PR_BODY="${{ github.event.issue.body || github.event.pull_request.body }}"
+            COMPLEXITY=$(echo "$PR_BODY" | grep -oP '[Cc]omplexity:\s*\K\d+' | head -1 || echo "5")
+            DOMAIN=$(echo "$PR_BODY" | grep -oP '[Dd]omain:\s*\K\w+' | head -1 || echo "general")
+            
+            # Determine review type based on complexity
+            if [ "$COMPLEXITY" -ge 8 ]; then
+              REVIEW_TYPE="thorough"
+            elif [ "$COMPLEXITY" -ge 5 ]; then
+              REVIEW_TYPE="standard"
+            else
+              REVIEW_TYPE="quick"
+            fi
+          fi
+          
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "review_type=$REVIEW_TYPE" >> $GITHUB_OUTPUT
+          echo "complexity=$COMPLEXITY" >> $GITHUB_OUTPUT
+          echo "domain=$DOMAIN" >> $GITHUB_OUTPUT
+      
+      - name: Verify Claude Credentials
+        id: verify_creds
+        run: |
+          # Check if credentials exist on self-hosted runner
+          if [ -f "$HOME/.claude/credentials.json" ]; then
+            echo "Found local Claude credentials"
+            echo "has_local_creds=true" >> $GITHUB_OUTPUT
+            
+            # Extract tokens from credentials file
+            ACCESS_TOKEN=$(jq -r '.claudeAiOauth.accessToken' "$HOME/.claude/credentials.json")
+            REFRESH_TOKEN=$(jq -r '.claudeAiOauth.refreshToken' "$HOME/.claude/credentials.json")
+            
+            # Check token expiry
+            EXPIRES_AT=$(jq -r '.claudeAiOauth.expiresAt' "$HOME/.claude/credentials.json")
+            CURRENT_TIME=$(date +%s%3N)
+            
+            if [ "$CURRENT_TIME" -lt "$EXPIRES_AT" ]; then
+              echo "Tokens are valid"
+              echo "tokens_valid=true" >> $GITHUB_OUTPUT
+            else
+              echo "Tokens expired, will use refresh token"
+              echo "tokens_valid=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No local credentials, checking organization secrets"
+            echo "has_local_creds=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Setup Claude Credentials
+        if: steps.verify_creds.outputs.has_local_creds != 'true'
+        run: |
+          # Create credentials from organization secrets
+          mkdir -p "$HOME/.claude"
+          
+          # Use organization secrets to create credentials file
+          cat > "$HOME/.claude/credentials.json" << 'EOF'
+          {
+            "claudeAiOauth": {
+              "accessToken": "${{ secrets.CLAUDE_ACCESS_TOKEN }}",
+              "refreshToken": "${{ secrets.CLAUDE_REFRESH_TOKEN }}",
+              "expiresAt": ${{ secrets.CLAUDE_TOKEN_EXPIRY }},
+              "scopes": [
+                "user:inference",
+                "user:profile"
+              ]
+            }
+          }
+          EOF
+          
+          chmod 600 "$HOME/.claude/credentials.json"
+          echo "Claude credentials configured from organization secrets"
+      
+      - name: Run Claude Interactive Review
+        uses: anthropics/claude-code-action@beta
+        with:
+          # Use OAuth tokens from organization secrets or local credentials
+          claude_code_oauth_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+          claude_code_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+          
+          # Use Claude Opus for thorough reviews
+          model: "claude-opus-4-1-20250805"
+          
+          timeout_minutes: "60"
+          
+          # Allow tool usage for testing and evidence collection
+          allowed_tools: "Bash(shellcheck),Bash(npm test),Bash(pytest),Grep,Read,Write,Edit"
+          
+          # Dynamic prompt based on review type
+          direct_prompt: |
+            Please perform a ${{ steps.context.outputs.review_type }} code review of this Pull Request.
+            
+            ## Review Type: ${{ steps.context.outputs.review_type }}
+            
+            ${{ steps.context.outputs.review_type == 'thorough' && 
+            'This is a THOROUGH review. Please:
+            - Perform deep architectural analysis
+            - Check all security implications
+            - Validate performance considerations
+            - Review test coverage comprehensively
+            - Suggest alternative implementations
+            - Check for technical debt' || 
+            steps.context.outputs.review_type == 'standard' &&
+            'This is a STANDARD review. Please:
+            - Check code correctness and quality
+            - Review error handling
+            - Validate test coverage
+            - Check documentation
+            - Identify security issues' ||
+            'This is a QUICK review. Please:
+            - Check for obvious bugs
+            - Review critical paths
+            - Validate basic functionality
+            - Flag major issues only' }}
+            
+            ## Focus Areas
+            1. Code Quality and Best Practices
+            2. Error Handling and Edge Cases
+            3. Security Vulnerabilities
+            4. Performance Considerations
+            5. Test Coverage
+            6. Documentation
+            
+            Provide specific, actionable feedback with code examples where helpful.
+            Mark as "APPROVED" if ready to merge, or "CHANGES REQUESTED" if issues found.
+      
+      - name: Post Review Summary
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const reviewType = '${{ steps.context.outputs.review_type }}';
+            const complexity = '${{ steps.context.outputs.complexity }}';
+            
+            const summary = `## 🤖 Claude Review Completed
+            
+            **Review Type**: ${reviewType.charAt(0).toUpperCase() + reviewType.slice(1)}
+            **Complexity**: ${complexity}/10
+            **Runner**: Self-hosted
+            **Model**: Claude Opus 4.1
+            
+            The review has been completed. Please check the comments above for detailed feedback.
+            
+            ---
+            *This review was performed using self-hosted Claude credentials.*`;
+            
+            if (context.issue && context.issue.number) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: summary
+              });
+            }
+
+  claude-auto-review:
+    # Auto-review on PR changes
+    if: github.event_name == 'pull_request'
+    
+    # Use self-hosted runner
+    runs-on: [self-hosted, linux, claude-runner]
+    
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
+      id-token: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Detect Complexity
+        id: detect
+        run: |
+          # Count changed files
+          FILE_COUNT=$(git diff --name-only origin/main...HEAD | wc -l)
+          
+          # Count changed lines
+          LINE_COUNT=$(git diff --stat origin/main...HEAD | tail -1 | grep -oP '\d+(?= insertions)' || echo "0")
+          
+          # Calculate complexity
+          if [ "$LINE_COUNT" -gt 500 ] || [ "$FILE_COUNT" -gt 10 ]; then
+            COMPLEXITY=8
+            REVIEW_DEPTH="thorough"
+          elif [ "$LINE_COUNT" -gt 200 ] || [ "$FILE_COUNT" -gt 5 ]; then
+            COMPLEXITY=6
+            REVIEW_DEPTH="standard"
+          elif [ "$LINE_COUNT" -gt 50 ] || [ "$FILE_COUNT" -gt 2 ]; then
+            COMPLEXITY=4
+            REVIEW_DEPTH="standard"
+          else
+            COMPLEXITY=3
+            REVIEW_DEPTH="quick"
+          fi
+          
+          echo "complexity=$COMPLEXITY" >> $GITHUB_OUTPUT
+          echo "review_depth=$REVIEW_DEPTH" >> $GITHUB_OUTPUT
+          echo "file_count=$FILE_COUNT" >> $GITHUB_OUTPUT
+          echo "line_count=$LINE_COUNT" >> $GITHUB_OUTPUT
+          
+          echo "Detected complexity: $COMPLEXITY/10 (Files: $FILE_COUNT, Lines: $LINE_COUNT)"
+      
+      - name: Setup Claude Credentials
+        run: |
+          # Ensure credentials are available
+          if [ ! -f "$HOME/.claude/credentials.json" ]; then
+            mkdir -p "$HOME/.claude"
+            
+            cat > "$HOME/.claude/credentials.json" << 'EOF'
+            {
+              "claudeAiOauth": {
+                "accessToken": "${{ secrets.CLAUDE_ACCESS_TOKEN }}",
+                "refreshToken": "${{ secrets.CLAUDE_REFRESH_TOKEN }}",
+                "expiresAt": ${{ secrets.CLAUDE_TOKEN_EXPIRY }},
+                "scopes": [
+                  "user:inference",
+                  "user:profile"
+                ]
+              }
+            }
+          EOF
+            
+            chmod 600 "$HOME/.claude/credentials.json"
+          fi
+      
+      - name: Run Claude Automated Review
+        id: claude-review
+        uses: anthropics/claude-code-action@beta
+        with:
+          # Use OAuth tokens
+          claude_code_oauth_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+          claude_code_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+          
+          # Use Claude Opus for thorough reviews
+          model: "claude-opus-4-1-20250805"
+          
+          # Dynamic review prompt based on complexity
+          direct_prompt: |
+            Please review this Pull Request with ${{ steps.detect.outputs.review_depth }} depth.
+            
+            ## PR Statistics
+            - Changed Files: ${{ steps.detect.outputs.file_count }}
+            - Changed Lines: ${{ steps.detect.outputs.line_count }}
+            - Complexity Score: ${{ steps.detect.outputs.complexity }}/10
+            - Review Depth: ${{ steps.detect.outputs.review_depth }}
+            
+            ## Your Review Should Include:
+            
+            ### 1. Code Quality Check
+            - Identify bugs and logic errors
+            - Check error handling completeness
+            - Review edge case coverage
+            - Validate input sanitization
+            
+            ### 2. Security Assessment
+            - Identify potential vulnerabilities
+            - Check for secure coding practices
+            - Review authentication/authorization
+            - Validate data handling
+            
+            ### 3. Performance Review
+            - Identify performance bottlenecks
+            - Check for unnecessary operations
+            - Review algorithm efficiency
+            - Validate resource usage
+            
+            ### 4. Best Practices
+            - Check code style consistency
+            - Review naming conventions
+            - Validate documentation
+            - Check test coverage
+            
+            ## Output Format
+            
+            Please provide:
+            1. **Overall Assessment**: APPROVED / CHANGES_REQUESTED / NEEDS_DISCUSSION
+            2. **Critical Issues**: List any blocking issues
+            3. **Suggestions**: Improvements that would enhance the code
+            4. **Positive Feedback**: What was done well
+            
+            Be specific with line numbers and provide code examples for suggested changes.
+          
+          # Use sticky comments for iterative reviews
+          use_sticky_comment: true
+          
+          # Longer timeout for complex PRs
+          timeout_minutes: "${{ steps.detect.outputs.complexity >= 7 && '90' || '60' }}"
+          
+          # Tools for validation
+          allowed_tools: "Bash(shellcheck),Bash(npm test),Bash(pytest),Grep,Read,Write"
+      
+      - name: Label PR Based on Review
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const complexity = parseInt('${{ steps.detect.outputs.complexity }}');
+            const labels = [];
+            
+            // Add complexity label
+            if (complexity >= 8) {
+              labels.push('complexity:high');
+              labels.push('needs:senior-review');
+            } else if (complexity >= 5) {
+              labels.push('complexity:medium');
+            } else {
+              labels.push('complexity:low');
+            }
+            
+            // Add review status label
+            labels.push('claude:reviewed');
+            
+            // Apply labels
+            await github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: labels
+            });
+
+  test-validation:
+    # Run tests in parallel with review
+    if: github.event_name == 'pull_request'
+    
+    runs-on: [self-hosted, linux, claude-runner]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Run ShellCheck
+        id: shellcheck
+        continue-on-error: true
+        run: |
+          echo "Running shellcheck on shell scripts..."
+          
+          # Install shellcheck if not available
+          if ! command -v shellcheck &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y shellcheck
+          fi
+          
+          # Find and check all shell scripts
+          SCRIPTS=$(find . -name "*.sh" -type f)
+          ERRORS=0
+          
+          for script in $SCRIPTS; do
+            echo "Checking: $script"
+            if ! shellcheck -S warning "$script"; then
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+          
+          echo "errors=$ERRORS" >> $GITHUB_OUTPUT
+          
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "⚠️ ShellCheck found $ERRORS files with issues"
+          else
+            echo "✅ All shell scripts pass ShellCheck"
+          fi
+      
+      - name: Run Tests
+        id: tests
+        continue-on-error: true
+        run: |
+          echo "Looking for test files..."
+          TEST_RESULTS="pending"
+          
+          # Check for different test runners
+          if [ -f "package.json" ] && grep -q "\"test\"" package.json; then
+            echo "Running npm tests..."
+            npm install
+            if npm test; then
+              TEST_RESULTS="passed"
+            else
+              TEST_RESULTS="failed"
+            fi
+          elif [ -f "Makefile" ] && grep -q "^test:" Makefile; then
+            echo "Running make test..."
+            if make test; then
+              TEST_RESULTS="passed"
+            else
+              TEST_RESULTS="failed"
+            fi
+          elif [ -f "pytest.ini" ] || [ -d "tests" ]; then
+            echo "Running pytest..."
+            pip install pytest
+            if pytest; then
+              TEST_RESULTS="passed"
+            else
+              TEST_RESULTS="failed"
+            fi
+          else
+            echo "No tests found"
+            TEST_RESULTS="none"
+          fi
+          
+          echo "test_results=$TEST_RESULTS" >> $GITHUB_OUTPUT
+      
+      - name: Comment Test Results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const shellcheckErrors = '${{ steps.shellcheck.outputs.errors }}' || '0';
+            const testResults = '${{ steps.tests.outputs.test_results }}';
+            
+            let statusEmoji = '✅';
+            let statusText = 'All checks passed';
+            
+            if (shellcheckErrors !== '0' || testResults === 'failed') {
+              statusEmoji = '⚠️';
+              statusText = 'Some checks failed';
+            }
+            
+            const comment = `## ${statusEmoji} Automated Validation Results
+            
+            ### ShellCheck
+            ${shellcheckErrors === '0' ? '✅ Passed' : `⚠️ ${shellcheckErrors} file(s) with issues`}
+            
+            ### Test Suite
+            ${testResults === 'passed' ? '✅ All tests passed' :
+              testResults === 'failed' ? '❌ Tests failed' :
+              testResults === 'none' ? '⚪ No tests found' :
+              '⏳ Tests pending'}
+            
+            **Overall Status**: ${statusText}
+            
+            ---
+            *Validation performed on self-hosted runner.*`;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
