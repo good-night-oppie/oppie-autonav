@@ -115,8 +115,8 @@ jobs:
     # Auto-review on PR changes
     if: github.event_name == 'pull_request'
     
-    runs-on: [self-hosted, ai-dev-runner-1]  # Use self-hosted runner if available
-    # Fallback: runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Use GitHub-hosted runner
+    # For self-hosted: runs-on: [self-hosted, ai-dev-runner-1]
     
     permissions:
       contents: read
