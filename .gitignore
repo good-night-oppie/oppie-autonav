@@ -1,0 +1,65 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude-Gemini Bridge (local installation)
+.claude-gemini-bridge/cache/
+.claude-gemini-bridge/logs/
+.claude-gemini-bridge/debug/
+
+# MCP
+.mcp/logs/
+.pm2/
+
+# Environment
+.env
+.env.local
+*.secret
+*.key
+
+# Test coverage
+coverage/
+*.coverage
+.coverage.*
+htmlcov/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Claude settings backup
+*.json.backup.*
