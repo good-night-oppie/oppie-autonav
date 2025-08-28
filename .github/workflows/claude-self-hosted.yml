@@ -88,6 +88,9 @@ jobs:
           # Use Claude Opus for thorough reviews
           model: "claude-opus-4-1-20250805"
           
+          # Use agent mode for automation events (workflow_dispatch)
+          mode: "agent"
+          
           timeout_minutes: "60"
           
           # Allow tool usage for testing and evidence collection
@@ -221,6 +224,9 @@ jobs:
           
           # Use Claude Opus for thorough reviews
           model: "claude-opus-4-1-20250805"
+          
+          # Use agent mode for automation (pull_request events)
+          mode: "agent"
           
           # Dynamic review prompt based on complexity
           direct_prompt: |
