@@ -21,8 +21,9 @@ jobs:
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude'))
     
-    runs-on: [self-hosted, ai-dev-runner-1]  # Use self-hosted runner if available
-    # Fallback to GitHub-hosted runner: runs-on: ubuntu-latest
+    # Use GitHub-hosted runner by default (change to self-hosted if available)
+    runs-on: ubuntu-latest
+    # For self-hosted: runs-on: [self-hosted, ai-dev-runner-1]
     
     permissions:
       contents: write
@@ -49,6 +50,7 @@ jobs:
           echo "domain=$DOMAIN" >> $GITHUB_OUTPUT
       
       - name: Run Claude Interactive Review
+        if: ${{ secrets.CLAUDE_ACCESS_TOKEN != '' }}
         uses: grll/claude-code-action@beta
         with:
           # Use OAuth tokens from Claude Code Max plan
@@ -65,6 +67,49 @@ jobs:
           
           # Allow tool usage for testing and evidence collection
           allowed_tools: "Bash(shellcheck),Bash(npm test),Bash(pytest),Grep,Read"
+      
+      - name: Post Setup Instructions
+        if: ${{ secrets.CLAUDE_ACCESS_TOKEN == '' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const setupGuide = `## 🔧 Claude PR Review Setup Required
+            
+            To enable automated PR reviews, please configure the following GitHub secrets:
+            
+            ### Required Secrets:
+            1. **CLAUDE_ACCESS_TOKEN** - Your Claude Code OAuth access token
+            2. **CLAUDE_REFRESH_TOKEN** - OAuth refresh token for token renewal
+            3. **CLAUDE_EXPIRES_AT** - Token expiration timestamp
+            4. **SECRETS_ADMIN_PAT** (optional) - GitHub PAT for enhanced permissions
+            
+            ### How to Configure:
+            
+            1. **Get your Claude Code OAuth tokens:**
+               - Install Claude Code CLI: \`npm install -g @anthropic-ai/claude-code\`
+               - Authenticate: \`claude auth\`
+               - Tokens are stored in \`~/.claude/config.json\`
+            
+            2. **Add secrets to repository:**
+               - Go to Settings → Secrets and variables → Actions
+               - Click "New repository secret"
+               - Add each token with the exact name above
+            
+            3. **Verify setup:**
+               - Comment "@claude please review" on any PR
+               - The bot should respond within 2-3 minutes
+            
+            For detailed instructions, see [SETUP_GUIDE.md](https://github.com/good-night-oppie/oppie-autonav/blob/main/docs/SETUP_GUIDE.md#github-secrets-configuration)
+            
+            ---
+            *Once configured, this message will not appear and Claude will automatically review your PRs.*`;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: setupGuide
+            });
 
   claude-auto-review:
     # Auto-review on PR changes
@@ -132,6 +177,7 @@ jobs:
       
       - name: Run Claude Automated Review
         id: claude-review
+        if: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
         uses: anthropics/claude-code-action@beta
         with:
           # Use OAuth token from Claude Code Max plan
@@ -191,6 +237,24 @@ jobs:
           
           # Tools for validation
           allowed_tools: "Bash(shellcheck),Grep,Read"
+      
+      - name: Post Setup Instructions for Auto-Review
+        if: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN == '' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = `## 🔧 Automated Review Setup Required
+            
+            To enable automated PR reviews on push, configure **CLAUDE_CODE_OAUTH_TOKEN** in repository secrets.
+            
+            See the [setup instructions](https://github.com/good-night-oppie/oppie-autonav/blob/main/docs/SETUP_GUIDE.md#github-secrets-configuration) for details.`;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
       
       - name: Start PR Monitor
         if: steps.detect.outputs.complexity >= '7'
