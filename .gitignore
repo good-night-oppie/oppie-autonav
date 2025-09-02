@@ -30,10 +30,8 @@ build/
 Thumbs.db
 
 # Claude-Gemini Bridge (local installation)
-.claude-gemini-bridge/cache/
-.claude-gemini-bridge/logs/
-.claude-gemini-bridge/debug/
-.claude-gemini-bridge/hooks/debug/captured/
+.claude-gemini-bridge/
+.gemini-oddity/
 claude-gemini-debug-logs-*.tar.gz
 
 # MCP
