@@ -33,6 +33,8 @@ Thumbs.db
 .claude-gemini-bridge/cache/
 .claude-gemini-bridge/logs/
 .claude-gemini-bridge/debug/
+.claude-gemini-bridge/hooks/debug/captured/
+claude-gemini-debug-logs-*.tar.gz
 
 # MCP
 .mcp/logs/
