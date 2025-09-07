@@ -1,0 +1,958 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 9,
+        "title": "React PWA Frontend",
+        "description": "Deliver Progressive Web App with real-time MCTS visualization, offline support, and performance optimizations.",
+        "details": "• Scaffold with Vite + React-Router + Redux Toolkit\n• WebSocket client to `/ws/progress` streaming MCTS nodes (JSON)\n• BufferedIPCClient (mirror of backend) → batching 100 msgs per 16 ms\n• VirtualScroll component (`react-window`) for node list\n• Service Worker via Workbox: precache static, dynamic caching IndexedDB (idb-keyval)\n• Web Worker `mcts.worker.ts` to offload heavy diff rendering\n• Lighthouse target: TTI<5 s, PWA score≥95",
+        "testStrategy": "• Vitest: 85 % coverage on reducers & components\n• Playwright E2E: create OAuth2 task flow passes\n• Web Vitals collection – assert CLS<0.1, FID<100 ms\n• Visual regression with Storybook + Chromatic",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-07T03:02:12.969Z",
+      "updated": "2025-08-07T07:49:26.098Z",
+      "description": "Tasks for master context"
+    }
+  },
+  "frontend": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-08-07T20:36:52.425Z",
+      "updated": "2025-08-07T20:36:52.425Z",
+      "description": "Frontend development tasks (React, PWA, UI/UX)"
+    }
+  },
+  "backend": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-08-07T20:36:56.781Z",
+      "updated": "2025-08-07T20:36:56.781Z",
+      "description": "Backend development tasks (Go, APIs, services, performance)"
+    }
+  },
+  "infrastructure": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-08-07T20:37:01.706Z",
+      "updated": "2025-08-07T20:37:01.706Z",
+      "description": "CI/CD, DevOps, GitHub Actions, deployment tasks"
+    }
+  },
+  "algorithms": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-08-07T20:37:06.225Z",
+      "updated": "2025-08-07T20:37:06.225Z",
+      "description": "Core algorithms - MCTS, neural networks, search optimization"
+    }
+  },
+  "storage": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-08-07T20:37:10.499Z",
+      "updated": "2025-08-07T20:37:10.499Z",
+      "description": "Data storage, snapshots, checkpoints, Git worktree management"
+    }
+  },
+  "quality": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-08-07T20:37:15.108Z",
+      "updated": "2025-08-07T20:37:15.108Z",
+      "description": "QA, testing, TDD, security, code analysis"
+    }
+  },
+  "eddie-focus": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-08-07T20:44:37.438Z",
+      "updated": "2025-08-07T20:44:37.438Z",
+      "description": "Eddie's expertise: Backend, Distributed Systems, ML/AI Infrastructure, Agentic AI - PST timezone"
+    }
+  },
+  "samuel-focus": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-08-07T20:44:42.929Z",
+      "updated": "2025-08-07T20:44:42.929Z",
+      "description": "Samuel's expertise: Full Stack, Agentic AI interest, Deep Learning passion - ET timezone"
+    }
+  },
+  "async-collab": {
+    "tasks": [],
+    "metadata": {
+      "created": "2025-08-07T20:44:48.414Z",
+      "updated": "2025-08-07T20:44:48.414Z",
+      "description": "Tasks suitable for async collaboration across PST-ET timezones (3hr difference)"
+    }
+  },
+  "prd5": {
+    "tasks": [
+      {
+        "id": 9,
+        "title": "React PWA Frontend",
+        "description": "Deliver Progressive Web App with real-time MCTS visualization, offline support, and performance optimizations.",
+        "details": "• Scaffold with Vite + React-Router + Redux Toolkit\n• WebSocket client to `/ws/progress` streaming MCTS nodes (JSON)\n• BufferedIPCClient (mirror of backend) → batching 100 msgs per 16 ms\n• VirtualScroll component (`react-window`) for node list\n• Service Worker via Workbox: precache static, dynamic caching IndexedDB (idb-keyval)\n• Web Worker `mcts.worker.ts` to offload heavy diff rendering\n• Lighthouse target: TTI<5 s, PWA score≥95",
+        "testStrategy": "• Vitest: 85 % coverage on reducers & components\n• Playwright E2E: create OAuth2 task flow passes\n• Web Vitals collection – assert CLS<0.1, FID<100 ms\n• Visual regression with Storybook + Chromatic",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Implement Hierarchical Planner Engine with Plan-as-Code DSL",
+        "description": "Build the core planning system that converts high-level goals into structured, executable task trees using YAML-based DSL",
+        "details": "• Define Plan-as-Code DSL v0.1 schema in YAML\n• Implement task decomposition algorithm for breaking down high-level objectives\n• Create node dependency graph management\n• Build validation oracle system for each task node\n• Implement budget tracking (tokens and time) per node\n• Create tool_to_use mapping system for agent assignment\n• Design northStarMetric tracking system\n• Implement plan serialization/deserialization\n• Add plan validation and contract verification",
+        "testStrategy": "• Unit tests for DSL parsing and validation\n• Property tests for dependency graph acyclicity\n• Integration tests for end-to-end plan generation\n• Test oracle validation mechanisms\n• Benchmark plan generation time < 2s for complex tasks",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "DSL v0.1 Schema Design with Minimal Semantics",
+            "description": "Design the Plan-as-Code DSL schema with nodes, edges (DAG), tool_to_use, I/O schema, and lightweight pre/post conditions",
+            "details": "Define YAML structure for:\n- Nodes with unique IDs and tool bindings\n- DAG edges with dependency relationships\n- tool_to_use field mapping to concrete agents/actions\n- Input/output schema per node (JSON-Schema compatible)\n- Lightweight pre/post conditions (file existence, command exit status, simple content checks)\n- Cross-node I/O contract specifications\n\nSuccess Criteria:\n- Schema supports all required fields\n- Examples parse without errors\n- Pre/post conditions are verifiable",
+            "status": "in-progress",
+            "dependencies": [],
+            "parentTaskId": 10
+          },
+          {
+            "id": 2,
+            "title": "Parser & Static Validation with Semantic Checks",
+            "description": "Build YAML parser with structural and semantic validation including JSON-Schema/Pydantic checks and cross-node I/O contract verification",
+            "details": "Implement parser and validator for:\n- YAML to model parsing with error recovery\n- JSON-Schema/Pydantic structural validation\n- Topology-order and cycle detection for DAG\n- Cross-node I/O contract checks (upstream outputs satisfy downstream inputs)\n- Pre/post condition semantic validation\n- Generate-validate-self-repair loop (2-3 attempts max)\n\nSuccess Criteria:\n- Schema pass rate ≥ 95% on test suite\n- Detects all cycles and invalid contracts\n- Self-repair succeeds in 80% of fixable cases\n- Clear error messages for validation failures",
+            "status": "pending",
+            "dependencies": [
+              "10.1"
+            ],
+            "parentTaskId": 10
+          },
+          {
+            "id": 3,
+            "title": "Task Decomposition Planner with Self-Repair",
+            "description": "LLM-driven decomposition that produces DSL-conformant plans with generate→validate→self-repair loop",
+            "details": "Build the Planner component:\n- LLM prompting for task decomposition into DSL format\n- Integration with parser/validator for immediate validation\n- Self-repair mechanism when validation fails (max 3 attempts)\n- Pre-execution contract inspection after topology sort\n- Error feedback loop to improve generation\n\nEngineering Techniques:\n1. Generate-validate-self-repair loop for higher success rate\n2. Contract inspection before execution to prevent invalid plans\n\nSuccess Criteria:\n- First-attempt DSL compliance ≥ 70%\n- After self-repair: DSL compliance ≥ 95%\n- Plans satisfy all I/O contracts before execution\n- Deterministic output for same input/environment",
+            "status": "pending",
+            "dependencies": [
+              "10.1",
+              "10.2"
+            ],
+            "parentTaskId": 10
+          },
+          {
+            "id": 4,
+            "title": "Dispatcher with Tool Binding",
+            "description": "Map tool_to_use to concrete agents/actions and normalize outputs to declared schema",
+            "details": "Implement the dispatcher component:\n- Tool registry mapping tool_to_use strings to concrete implementations\n- Agent/action invocation with proper parameter passing\n- Output normalization to match declared I/O schemas\n- Error handling and retry logic for tool failures\n- Tool capability discovery and validation\n\nSuccess Criteria:\n- All registered tools invoke correctly\n- Output always conforms to declared schema\n- Failed tools produce actionable error messages\n- Tool binding is deterministic and traceable",
+            "status": "pending",
+            "dependencies": [
+              "10.2"
+            ],
+            "parentTaskId": 10
+          },
+          {
+            "id": 5,
+            "title": "Verification Oracles for Success/Failure",
+            "description": "Run per-node postconditions to decide success/failure and emit readable diagnostics",
+            "details": "Build verification oracle framework:\n- Execute pre-conditions before node execution\n- Execute post-conditions after node completion\n- Support multiple oracle types:\n  - File existence checks\n  - Command exit status validation\n  - Content pattern matching\n  - Schema compliance verification\n- Generate actionable diagnostics for failures\n- Collect success/failure metrics\n\nSuccess Criteria:\n- Node-level success ≥ 90% on test suite\n- Every failed node produces clear diagnostics\n- Identifies which specific pre/post condition failed\n- Oracle execution is deterministic",
+            "status": "pending",
+            "dependencies": [
+              "10.1"
+            ],
+            "parentTaskId": 10
+          },
+          {
+            "id": 6,
+            "title": "Simple Sequential Executor with Bounded Retry",
+            "description": "Sequential DAG execution with bounded per-node retry, leaving advanced search (LATS/MCTS) for later iterations",
+            "details": "Implement basic execution engine:\n- Topological sort for execution order\n- Sequential node execution following DAG dependencies\n- Per-node retry logic (max 1 retry by default)\n- Integration with dispatcher for tool execution\n- Integration with oracles for verification\n- Execution trace logging for debugging\n- Graceful failure handling with rollback points\n\nNote: Advanced search algorithms (LATS/MCTS) deferred to post-MVP\n\nSuccess Criteria:\n- End-to-end completion ≥ 80% on test suite\n- Execution follows correct DAG order\n- Retry mechanism improves success rate by ≥15%\n- Stable execution traces (deterministic ignoring timestamps)\n- Failure transparency with clear error reporting\n<info added on 2025-08-14T18:16:18.225Z>\nImportant clarification of scope:\n\nThis subtask implements only the Minimum-Viable Executor. It executes a validated DAG linearly (topological order), invokes the Dispatcher and Verification Oracles, and applies a single bounded retry (default 1) per node. It does NOT include any search tree construction, backtracking, dynamic replanning, MCTS, LATS, beam search, or related exploration algorithms—those are deferred to later tasks (e.g., Task 14).\n</info added on 2025-08-14T18:16:18.225Z>",
+            "status": "pending",
+            "dependencies": [
+              "10.2",
+              "10.3",
+              "10.4",
+              "10.5"
+            ],
+            "parentTaskId": 10
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Build Hot-Loop Sandbox with Firecracker/gVisor Integration",
+        "description": "Create high-performance, memory-level virtualization environment for MCTS exploration with sub-second iteration times",
+        "details": "• Evaluate and select virtualization technology (Firecracker vs gVisor vs Devcontainer)\n• Implement persistent VM pool management\n• Create hot-state container provisioning system\n• Build sandbox lifecycle management (create, execute, destroy)\n• Implement resource isolation and limits\n• Add network isolation and security sandboxing\n• Create fast file system mounting with overlayfs\n• Build sandbox metrics and monitoring\n• Implement sandbox pooling for instant availability\n• Add crash recovery and automatic restart mechanisms",
+        "testStrategy": "• Benchmark sandbox creation time < 100ms\n• Test resource isolation with stress tests\n• Security testing for escape prevention\n• Concurrent sandbox execution tests (100+ parallel)\n• Memory leak detection and cleanup verification",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Implement CAS + COW State Management System",
+        "description": "Build content-addressable storage with copy-on-write snapshots for zero-cost state management in MCTS",
+        "details": "• Implement content-addressable storage with SHA256 hashing\n• Build copy-on-write snapshot mechanism using overlayfs\n• Create incremental state tracking system\n• Implement lazy evaluation for state changes\n• Build state merkle tree for verification\n• Add state compression and deduplication\n• Implement atomic state transitions\n• Create state garbage collection\n• Build state caching layer for hot paths\n• Add state persistence and recovery",
+        "testStrategy": "• Property tests for state consistency\n• Benchmark state switch time < 10ms\n• Test deduplication efficiency > 80%\n• Concurrent state modification tests\n• Crash recovery and integrity tests",
+        "status": "in-progress",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Day 0: TDD Environment Setup & Project Scaffolding",
+            "description": "Set up Go development environment with TDD toolchain including pre-commit hooks, coverage enforcement, and Helios project structure",
+            "details": "1. Install Go, Git, RocksDB libraries (librocksdb-dev)\n2. Initialize Go module: github.com/oppie/helios-engine\n3. Create project structure: pkg/helios/{vst,l1cache,objstore,types}, internal/util, cmd/helios-cli\n4. Configure pre-commit hooks with golangci-lint, go fmt, and go test -short\n5. Create Makefile with test, cover (85% threshold), and lint targets\n6. Set up spec/golden and docs directories for TDD artifacts\n7. Verify setup with initial smoke test",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 12
+          },
+          {
+            "id": 2,
+            "title": "Day 1: Core Types & BLAKE3 Hashing (TDD)",
+            "description": "Define Helios core types (Hash, Object, Tree, Blob) and implement BLAKE3 content hashing with strict TDD",
+            "details": "TDD Cycle:\n1. RED: Write failing tests in internal/util/hash_test.go with table-driven test cases for BLAKE3 and SHA256\n2. Define types in pkg/helios/types/types.go: Hash, HashAlgorithm, ObjectType, Object interface\n3. GREEN: Implement HashContent() in internal/util/hash.go using lukechampine.com/blake3\n4. REFACTOR: Add SHA256 support, optimize hash operations\n5. Verify 85%+ coverage with make cover\nExpected: Hash computation < 1μs for small objects, content-addressing foundation established",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 12
+          },
+          {
+            "id": 3,
+            "title": "Day 2-3: L0 Virtual State Tree (VST) Implementation",
+            "description": "Build the in-memory Virtual State Tree for nanosecond-level operations using immutable data structures",
+            "details": "TDD Implementation:\n1. RED: Write tests for VST operations: WriteFile(), DeleteFile(), GetRootHash()\n2. Implement VST using Arc<Node> for zero-copy sharing between snapshots\n3. Build path-based trie structure with lazy evaluation\n4. GREEN: Implement copy-on-write semantics for modifications\n5. Add batch operations for atomic multi-file changes\n6. REFACTOR: Optimize memory layout for cache-friendly access\nPerformance target: < 70μs for commit operations in L0\nTest invariants: Tree immutability, hash consistency, memory sharing verification\n<info added on 2025-08-23T05:03:54.403Z>\n**Implementation Guidance from Research:**\n**ARCHITECTURE:**\n- Use `atomic.Pointer[T]` (Go 1.19+) for Arc-like COW semantics.\n- Implement a read-copy-update (RCU) pattern with CAS loops for lock-free updates.\n- Leverage hardware-level atomic operations for sequential consistency.\n\n**PERFORMANCE:**\n- Utilize `sync.Pool` for node allocation to reduce GC pressure by ~60%.\n- Ensure cache line alignment (128-byte boundaries) to prevent false sharing.\n- Design for zero heap allocation for Get operations.\n- Note: `atomic.Pointer` is ~2x faster for writes and ~25x faster for reads vs `RWMutex`.\n\n**SECURITY & DURABILITY:**\n- Rely on COW for snapshot isolation (ACID properties).\n- Implement Merkle tree-like hash validation for tamper detection.\n- Use a Write-Ahead Log (WAL) for durability, with `fsync` for critical commits.\n\n**TESTING:**\n- Augment TDD with property-based testing (e.g., `pgregory.net/rapid`).\n- Run all tests with the race detector enabled to ensure concurrent correctness.\n- Implement microsecond-level benchmarking to validate the `<70μs` target.\n\n**RISKS & MITIGATIONS:**\n- **Unbounded COW growth:** Implement garbage collection for unreferenced nodes.\n- **ABA problem:** Use generation counters within CAS loops.\n- **Excessive copying:** Ensure immutable parts of the trie are shared, not copied.\n- **`sync.Pool` misuse:** Use separate pools for objects of different sizes.\n</info added on 2025-08-23T05:03:54.403Z>",
+            "status": "done",
+            "dependencies": [
+              "12.2"
+            ],
+            "parentTaskId": 12
+          },
+          {
+            "id": 4,
+            "title": "Day 4-5: L1 Ring Buffer Cache Implementation",
+            "description": "Build compressed object cache using ring buffer for microsecond-level warm data access",
+            "details": "TDD Implementation:\n1. RED: Write tests for cache operations: Get(), Put(), Eviction policy\n2. Implement fixed-size ring buffer with LRU eviction (256MB default)\n3. Add LZ4 compression for objects before caching\n4. GREEN: Build concurrent-safe access with sync.RWMutex\n5. Implement cache statistics and hit-rate monitoring\n6. REFACTOR: Optimize for cache-line alignment and NUMA awareness\nPerformance target: < 10μs for cache hits, > 90% hit rate for hot objects\nTest: Concurrent access safety, eviction correctness, compression ratio > 2x",
+            "status": "done",
+            "dependencies": [
+              "12.3"
+            ],
+            "parentTaskId": 12
+          },
+          {
+            "id": 5,
+            "title": "Day 6-7: L2 RocksDB Persistent Store",
+            "description": "Implement persistent object store using RocksDB for millisecond-level cold storage",
+            "details": "TDD Implementation:\n1. RED: Write tests for persistent operations: Get(), PutBatch(), Delete()\n2. Integrate RocksDB with Go bindings (grocksdb or tecbot/gorocksdb)\n3. Implement batch writes for atomic multi-object persistence\n4. GREEN: Add Write-Ahead-Log (WAL) for crash consistency\n5. Configure column families for objects vs metadata separation\n6. REFACTOR: Tune RocksDB options (block cache, bloom filters, compaction)\nPerformance target: < 5ms for batch writes, < 2ms for reads\nTest: Crash recovery, batch atomicity, 1M+ objects stress test",
+            "status": "done",
+            "dependencies": [
+              "12.4"
+            ],
+            "parentTaskId": 12
+          },
+          {
+            "id": 6,
+            "title": "Day 8: HeliosEngine State Manager Integration",
+            "description": "Integrate L0/L1/L2 layers into unified HeliosEngine implementing StateManager interface",
+            "details": "TDD Implementation:\n1. RED: Write integration tests for StateManager API: Commit(), Restore(), Diff()\n2. Implement HeliosEngine orchestrating all three layers\n3. Build async pipeline: L0 → L1 → L2 with backpressure handling\n4. GREEN: Implement snapshot operations across layers\n5. Add Materialize() for selective file extraction\n6. REFACTOR: Optimize hot paths and minimize allocations\nKey APIs: Commit(Durability) → (SnapshotID, CommitMetrics), Diff(base, target) → DiffResult\nTest: End-to-end snapshot lifecycle, layer coordination, metric accuracy",
+            "status": "done",
+            "dependencies": [
+              "12.5"
+            ],
+            "parentTaskId": 12
+          },
+          {
+            "id": 7,
+            "title": "Day 9: Performance Optimization & Benchmarking",
+            "description": "Optimize Helios for MCTS hot-loop requirements and establish performance baselines",
+            "details": "TDD Performance Work:\n1. Write benchmark tests for all critical paths using Go's testing.B\n2. Profile CPU and memory using pprof to identify bottlenecks\n3. Implement optimizations:\n   - Lock-free data structures where possible\n   - Memory pool allocation to reduce GC pressure\n   - Parallel hash computation for large trees\n   - Zero-allocation paths for hot operations\n4. Verify performance targets:\n   - Commit latency < 70μs (P99)\n   - Cache hit rate > 90%\n   - Memory usage < 512MB for 100K objects\n5. Create performance regression tests\nTest: Benchmark suite, stress tests with 1000 ops/sec, memory leak detection",
+            "status": "done",
+            "dependencies": [
+              "12.6"
+            ],
+            "parentTaskId": 12
+          },
+          {
+            "id": 8,
+            "title": "Day 10: MCTS Integration with CommitMetrics",
+            "description": "Integrate Helios with MCTS engine and implement CommitMetrics feedback into reward functions",
+            "details": "Critical Integration:\n1. Update StateManager interface to return CommitMetrics:\n   - CommitLatency: time.Duration (sync hot path timing)\n   - NewObjects: int (number of new Tree/Blob objects)\n   - NewObjectsSize: int64 (bytes of new content)\n2. Implement metric collection in HeliosEngine.Commit()\n3. Wire metrics into MCTS reward function:\n   - engineCost += CommitLatency.Microseconds() * 0.01\n   - engineCost += NewObjects * 0.1\n   - totalReward = codeReward - engineCost\n4. This teaches AI \"engineering taste\" - penalizing wasteful operations\n5. Add telemetry for monitoring metric distributions\nTest: Metric accuracy, reward function integration, MCTS decision impact",
+            "status": "review",
+            "dependencies": [
+              "12.7"
+            ],
+            "parentTaskId": 12
+          },
+          {
+            "id": 9,
+            "title": "Day 11: Comprehensive Testing & Production Hardening",
+            "description": "Complete test suite with property-based testing, chaos engineering, and production readiness verification",
+            "details": "Final Testing Phase:\n1. Property-based testing for core invariants:\n   - Content addressing: same content → same hash always\n   - Snapshot isolation: changes don't affect other snapshots\n   - Merkle tree properties: parent changes when child changes\n2. Chaos testing:\n   - Random kill -9 during operations\n   - Disk full scenarios\n   - Concurrent modification stress\n3. Integration test suite:\n   - Full MCTS exploration with 1000+ nodes\n   - Memory pressure scenarios\n   - Performance regression guards\n4. Production readiness:\n   - Monitoring/metrics endpoints\n   - Graceful shutdown handlers\n   - Configuration validation\n5. Documentation: API docs, architecture diagrams, runbooks\nTarget: 85%+ test coverage, zero data loss under chaos, < 100ms P99 latency",
+            "status": "done",
+            "dependencies": [
+              "12.8"
+            ],
+            "parentTaskId": 12
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "title": "Create Multi-Dimensional Reward Function System",
+        "description": "Build comprehensive evaluation system with functional, non-functional, infrastructure, and human factors scoring",
+        "details": "• Define reward function interface and metrics\n• Implement functional metrics (test coverage, performance benchmarks)\n• Add code quality metrics (complexity, readability scores)\n• Build infrastructure cost modeling (cold start, memory, connections)\n• Implement token cost tracking and optimization\n• Add risk scoring system (CVE scanning, permission analysis)\n• Create human review time estimation model\n• Implement DPO (Direct Preference Optimization) for weight learning\n• Build metric aggregation and normalization\n• Add configurable weight profiles for different contexts",
+        "testStrategy": "• Unit tests for each metric calculation\n• Integration tests for reward aggregation\n• A/B testing framework for preference learning\n• Benchmark metric calculation < 100ms\n• Validate metric consistency and reproducibility",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Implement MCTS Engine with Hot-Loop Integration",
+        "description": "Build Monte Carlo Tree Search engine optimized for sub-5-second iterations in hot sandbox environment",
+        "details": "• Implement core MCTS algorithm (selection, expansion, simulation, backpropagation)\n• Build UCB1 selection strategy with configurable exploration constant\n• Integrate with hot-loop sandbox for rapid simulations\n• Implement parallel rollout execution\n• Add progressive widening for large action spaces\n• Build node pruning and memory management\n• Implement RAVE (Rapid Action Value Estimation)\n• Add virtual loss for parallel MCTS\n• Create checkpoint and resume functionality\n• Build MCTS visualization and debugging tools",
+        "testStrategy": "• Unit tests for MCTS components\n• Integration tests with sandbox environment\n• Benchmark iteration time < 5s\n• Test convergence on known problems\n• Parallel execution correctness tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Build Infrastructure-as-Code Integration Layer",
+        "description": "Create platform-native integration for generating and managing infrastructure alongside application code",
+        "details": "• Implement Terraform/Pulumi code generation\n• Build CloudFormation template management\n• Create platform API integrations (AWS, GCP, Azure)\n• Implement resource provisioning automation\n• Add infrastructure cost estimation\n• Build preview environment deployment system\n• Create infrastructure drift detection\n• Implement rollback and disaster recovery\n• Add infrastructure compliance checking\n• Build multi-cloud abstraction layer",
+        "testStrategy": "• Unit tests for IaC generation\n• Integration tests with cloud provider APIs\n• Cost estimation accuracy tests\n• Preview environment deployment tests\n• Rollback and recovery scenario tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define Requirements & High-Level Architecture",
+            "description": "Gather detailed functional, non-functional, security and compliance requirements and draft the overall architecture for the IaC Integration Layer.",
+            "dependencies": [],
+            "details": "Deliverables: requirements specification, context diagram, component list, interface catalog, initial tech-stack decision matrix, baseline security posture, test strategy outline, milestone roadmap.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Design Code Generation Engine",
+            "description": "Produce detailed design for Terraform/Pulumi/CloudFormation code generation engine including DSL, templates, and plug-in system.",
+            "dependencies": [
+              "15.1"
+            ],
+            "details": "Define APIs, data models, extensibility hooks; choose languages (Go, TypeScript), security controls (input validation, secret handling), unit/integration test matrix, sprint milestones.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement Code Generation Engine MVP",
+            "description": "Develop minimal viable code generation engine supporting core resources and unit test coverage.",
+            "dependencies": [
+              "15.2"
+            ],
+            "details": "Implement parser, renderer, template store, secret redaction; integrate CI checks; deliver CLI/SDK; provide test harness and coverage reports.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Develop Provider Adapter Framework",
+            "description": "Create framework that allows pluggable cloud provider adapters with consistent CRUD interfaces.",
+            "dependencies": [
+              "15.2"
+            ],
+            "details": "Define adapter interface (Init, Plan, Apply, Destroy), error model, auth strategy; implement mock adapter; document security scopes; add contract tests.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement AWS Provider Adapter",
+            "description": "Build adapter for AWS CloudFormation/Terraform with IAM handling and resource mapping.",
+            "dependencies": [
+              "15.4"
+            ],
+            "details": "Support core services (VPC, EC2, S3, RDS); integrate STS auth; encryption at rest; unit and live-account integration tests; milestone demo.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Implement GCP Provider Adapter",
+            "description": "Build adapter for GCP Deployment Manager/Terraform with IAM and resource translation.",
+            "dependencies": [
+              "15.4"
+            ],
+            "details": "Support VPC, GCE, GCS, CloudSQL; service account auth; KMS encryption; add integration tests in sandbox project; deliver performance benchmarks.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Implement Azure Provider Adapter",
+            "description": "Build adapter for Azure ARM/Bicep/Terraform with RBAC and resource mapping.",
+            "dependencies": [
+              "15.4"
+            ],
+            "details": "Support VNet, VM, Blob, SQL; managed identity auth; Key Vault integration; run integration tests in dev subscription; produce adapter docs.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 8,
+            "title": "Build Infrastructure Cost Estimation Module",
+            "description": "Implement real-time cost estimation using provider pricing APIs and internal rate cards.",
+            "dependencies": [
+              "15.3",
+              "15.4",
+              "15.5",
+              "15.6",
+              "15.7"
+            ],
+            "details": "Design cost model, caching layer, currency conversion; expose REST/GraphQL endpoints; add accuracy tests and alerts for price drift.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 9,
+            "title": "Build Drift Detection & Remediation Module",
+            "description": "Detect configuration drift between declared IaC and live resources and enable automated or manual remediation.",
+            "dependencies": [
+              "15.3",
+              "15.4"
+            ],
+            "details": "Implement snapshot collector, diff engine, remediation planner; add RBAC controls; create alerting hooks; develop chaos tests.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 10,
+            "title": "Build Preview Environment Deployment System",
+            "description": "Create on-demand ephemeral environments for pull requests with automatic teardown.",
+            "dependencies": [
+              "15.3",
+              "15.4",
+              "15.5",
+              "15.6",
+              "15.7"
+            ],
+            "details": "Integrate with GitHub webhooks; auto-generate unique namespaces; secure secrets; track TTL; write smoke tests and cost guardrails.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 11,
+            "title": "Implement Compliance Checking & Policy Engine",
+            "description": "Add policy-as-code engine to validate configurations against security/compliance standards (CIS, SOC2).",
+            "dependencies": [
+              "15.3",
+              "15.4"
+            ],
+            "details": "Use OPA/Rego; build rule library; integrate with CI; generate compliance reports; add unit/regression tests; set milestone for audit readiness.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 12,
+            "title": "Implement Rollback & Disaster Recovery Module",
+            "description": "Enable automatic rollback and DR workflows for failed deployments or outages.",
+            "dependencies": [
+              "15.3",
+              "15.4",
+              "15.5",
+              "15.6",
+              "15.7"
+            ],
+            "details": "Design state checkpointing, versioned plans, cross-region replication; define RTO/RPO targets; implement fail-over tests and drills.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 13,
+            "title": "Build Multi-Cloud Abstraction Layer & CI/CD Hooks",
+            "description": "Provide unified API and integrate hooks for existing CI/CD systems to trigger IaC operations across clouds.",
+            "dependencies": [
+              "15.3",
+              "15.4",
+              "15.5",
+              "15.6",
+              "15.7"
+            ],
+            "details": "Expose gRPC/REST endpoints; create CLI and GitHub Actions; ensure secure token propagation; performance/load tests; milestone for first cross-cloud deployment.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 14,
+            "title": "End-to-End Integration Testing & Delivery Milestones",
+            "description": "Execute full-stack tests, finalize documentation, and define phased rollout plan.",
+            "dependencies": [
+              "15.8",
+              "15.9",
+              "15.10",
+              "15.11",
+              "15.12",
+              "15.13"
+            ],
+            "details": "Create test matrix covering provisioning, cost, drift, compliance, rollback; collect KPIs; generate release notes; schedule GA and post-launch monitoring.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "title": "Create Decision Package Generation System",
+        "description": "Build comprehensive decision package system with interactive visualizations, risk reports, and reproducible environments",
+        "details": "• Design decision package data structure\n• Implement interactive MCTS decision tree visualization\n• Build risk and trade-off report generation\n• Create one-click reproducible environment provisioning\n• Add decision rationale documentation\n• Implement alternative path exploration viewer\n• Build performance impact analysis\n• Create security change highlighting\n• Add rollback plan generation\n• Implement decision package versioning",
+        "testStrategy": "• Unit tests for package generation\n• UI tests for interactive visualizations\n• Integration tests for environment reproduction\n• User acceptance testing for clarity\n• Performance tests for large decision trees",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Implement Episode Store and Learning Engine",
+        "description": "Build trajectory storage system for capturing task episodes and enabling continuous learning",
+        "details": "• Design episode data schema and storage format\n• Implement trajectory capture and serialization\n• Build nearest-neighbor retrieval system\n• Create episode similarity scoring\n• Implement experience replay mechanism\n• Add policy network fine-tuning pipeline\n• Build value network update system\n• Create batch learning scheduler\n• Implement online learning capabilities\n• Add episode compression and archival",
+        "testStrategy": "• Unit tests for episode storage\n• Integration tests for retrieval system\n• Learning convergence tests\n• Performance tests for large episode stores\n• Data integrity and recovery tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Build Observability and Metrics Platform",
+        "description": "Create comprehensive observability system for monitoring, logging, and tracing all Oppie operations",
+        "details": "• Implement OpenTelemetry integration\n• Build custom metrics collection system\n• Create distributed tracing for MCTS operations\n• Implement log aggregation and analysis\n• Add performance profiling tools\n• Build real-time dashboard system\n• Create alerting and anomaly detection\n• Implement SLO/SLI tracking\n• Add cost tracking and optimization metrics\n• Build debugging and troubleshooting tools",
+        "testStrategy": "• Unit tests for metric collection\n• Integration tests with monitoring backends\n• Load testing for high-volume metrics\n• Dashboard functionality tests\n• Alert accuracy and latency tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Create Agent Orchestration System",
+        "description": "Build system for coordinating multiple specialized AI agents (TDD, Security, Performance, etc.) within MCTS framework",
+        "details": "• Define agent interface and communication protocol\n• Implement agent registry and discovery\n• Build task distribution engine\n• Create agent capability matching system\n• Implement parallel agent execution\n• Add agent health monitoring\n• Build result aggregation system\n• Create agent versioning and updates\n• Implement agent sandboxing\n• Add agent performance tracking",
+        "testStrategy": "• Unit tests for agent coordination\n• Integration tests with multiple agents\n• Load balancing and distribution tests\n• Fault tolerance and recovery tests\n• Performance benchmarks for agent overhead",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Implement GitHub Integration and PR Automation",
+        "description": "Build GitHub integration for automated PR creation with decision packages and review workflows",
+        "details": "• Implement GitHub API integration\n• Build automated PR creation system\n• Add decision package attachment to PRs\n• Create PR comment bot for updates\n• Implement review feedback processing\n• Add merge automation with checks\n• Build branch protection integration\n• Create CI/CD pipeline triggers\n• Implement rollback automation\n• Add PR metrics and analytics",
+        "testStrategy": "• Unit tests for GitHub API calls\n• Integration tests with test repositories\n• PR creation and update workflow tests\n• Review feedback processing tests\n• CI/CD trigger verification tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 21,
+        "title": "Build User Trust Interface and Visualization Dashboard",
+        "description": "Create comprehensive UI for visualizing MCTS exploration, decisions, and building user trust",
+        "details": "• Design responsive React dashboard architecture\n• Implement real-time MCTS tree visualization\n• Build decision path exploration interface\n• Create risk and trade-off visualization\n• Add performance metrics dashboard\n• Implement cost tracking visualizations\n• Build interactive decision replay\n• Create preference feedback system\n• Add collaborative review features\n• Implement dark mode and accessibility",
+        "testStrategy": "• Unit tests for React components\n• E2E tests with Playwright\n• Performance tests for large visualizations\n• Accessibility compliance testing\n• User experience testing sessions",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 22,
+        "title": "Implement Security and Compliance Framework",
+        "description": "Build comprehensive security scanning, vulnerability detection, and compliance checking system",
+        "details": "• Integrate security scanning tools (gosec, Snyk, CodeQL)\n• Build CVE vulnerability tracking system\n• Implement permission analysis framework\n• Create security risk scoring\n• Add compliance policy engine\n• Build secret detection and prevention\n• Implement security testing automation\n• Create security audit logging\n• Add zero-trust architecture support\n• Build security remediation suggestions",
+        "testStrategy": "• Security scanning accuracy tests\n• Vulnerability detection validation\n• Compliance policy enforcement tests\n• Secret detection effectiveness tests\n• Security audit trail verification",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 23,
+        "title": "Create Performance Optimization Layer",
+        "description": "Build high-performance optimization layer with caching, parallel processing, and resource management",
+        "details": "• Implement multi-tier caching system (memory, SSD, disk)\n• Build parallel task execution engine\n• Create resource pool management\n• Implement zero-copy data pipelines\n• Add connection pooling and reuse\n• Build lazy evaluation system\n• Create batch processing optimization\n• Implement predictive prefetching\n• Add memory pressure management\n• Build performance profiling integration",
+        "testStrategy": "• Performance benchmark suite\n• Cache hit ratio optimization tests\n• Parallel execution correctness tests\n• Resource utilization tests\n• Memory leak detection tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 24,
+        "title": "Build Testing and Quality Assurance System",
+        "description": "Implement comprehensive testing framework with TDD enforcement, coverage tracking, and quality gates",
+        "details": "• Implement TDD enforcement framework\n• Build test generation capabilities\n• Create coverage tracking and reporting\n• Implement property-based testing\n• Add mutation testing support\n• Build test flakiness detection\n• Create regression test suite\n• Implement performance testing framework\n• Add integration test orchestration\n• Build quality gate enforcement",
+        "testStrategy": "• Meta-tests for testing framework\n• Coverage accuracy validation\n• Test generation effectiveness tests\n• Quality gate enforcement tests\n• Performance testing validation",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 25,
+        "title": "Implement Configuration and Feature Flag System",
+        "description": "Build dynamic configuration management with feature flags, A/B testing, and gradual rollout capabilities",
+        "details": "• Design configuration schema and validation\n• Implement feature flag engine\n• Build A/B testing framework\n• Create gradual rollout system\n• Add configuration hot-reload\n• Implement user segmentation\n• Build configuration versioning\n• Create configuration audit trail\n• Add emergency kill switches\n• Implement configuration synchronization",
+        "testStrategy": "• Feature flag toggle tests\n• A/B test distribution validation\n• Configuration hot-reload tests\n• Rollout percentage accuracy tests\n• Kill switch effectiveness tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "low",
+        "subtasks": []
+      },
+      {
+        "id": 26,
+        "title": "Create Documentation and Knowledge Base System",
+        "description": "Build comprehensive documentation generation, API documentation, and knowledge base management",
+        "details": "• Implement automatic documentation generation\n• Build API documentation system\n• Create interactive tutorials\n• Implement knowledge base search\n• Add documentation versioning\n• Build example code library\n• Create video tutorial integration\n• Implement documentation feedback system\n• Add multilingual support\n• Build documentation analytics",
+        "testStrategy": "• Documentation generation accuracy tests\n• API documentation completeness tests\n• Search relevance tests\n• Tutorial functionality tests\n• Multilingual content tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "low",
+        "subtasks": []
+      },
+      {
+        "id": 27,
+        "title": "Build End-to-End Integration and Deployment Pipeline",
+        "description": "Create complete integration of all components with automated deployment and orchestration",
+        "details": "• Integrate all system components\n• Build end-to-end workflow automation\n• Create deployment orchestration\n• Implement blue-green deployments\n• Add canary release support\n• Build rollback automation\n• Create health check system\n• Implement disaster recovery\n• Add multi-environment support\n• Build deployment analytics",
+        "testStrategy": "• End-to-end integration tests\n• Deployment automation tests\n• Rollback scenario tests\n• Disaster recovery drills\n• Multi-environment validation",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "low",
+        "subtasks": []
+      },
+      {
+        "id": 28,
+        "title": "Implement Metadata Namespace Separation for L2 Store",
+        "description": "Refactor the L2 storage layer to use proper keyspace separation for metadata, replacing the inefficient 'meta:' key prefix to resolve a critical performance issue identified in PR #25.",
+        "details": "The current implementation of the L2 content-addressable store uses a simple 'meta:' string prefix for all metadata keys, leading to inefficient prefix scans and potential key collisions. This task will refactor the storage layer to introduce a dedicated namespace for metadata. \n\n**Implementation Steps:**\n1. **Design a new keyspace model:** Instead of string prefixes, use a more efficient separation mechanism suitable for the underlying key-value store (e.g., separate Column Families in RocksDB, or a binary key structure like `[namespace_id_byte][key]`).\n2. **Refactor Storage Abstraction:** Modify the low-level read/write functions within the CAS (Task 12) to encapsulate the new namespace logic. All consumers of metadata should go through this updated abstraction.\n3. **Develop a Data Migration Script:** Create a standalone, idempotent script to transform existing data. The script must scan for all keys with the 'meta:' prefix, rewrite them into the new namespace format, and safely delete the old keys.\n4. **Integrate and Update Consumers:** Identify and update all parts of the codebase (e.g., Configuration System from Task 25) that currently interact with metadata keys to use the new, abstracted access methods.\n5. **Ensure Transactional Integrity:** The migration process must be atomic or at least resumable to prevent data corruption in case of interruption.",
+        "testStrategy": "1. **Unit Tests:** Write unit tests for the new key encoding/decoding logic and the updated storage abstraction layer to ensure correctness of the namespace separation.\n2. **Migration Tooling Tests:** Create a test suite for the migration script. Test it against various scenarios: an empty database, a database with only metadata, a mixed data database, and running the script multiple times to verify idempotency.\n3. **Integration Tests:** Verify that systems consuming the metadata (like the Configuration System) continue to function correctly after the refactoring, reading and writing metadata without issue.\n4. **Performance Benchmarks:** Establish a baseline by benchmarking metadata read/write/scan operations with the old 'meta:' prefix. Rerun the same benchmarks after the change to quantify the performance improvement, targeting at least a 50% reduction in scan times.\n5. **Data Integrity Verification:** After migration, run a verification tool that compares a checksum of the migrated data against a checksum of the original data (transformed in memory) to ensure no data was lost or corrupted.",
+        "status": "pending",
+        "dependencies": [
+          12
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 29,
+        "title": "Add P99 latency tracking and jitter metrics to Helios",
+        "description": "Implement comprehensive latency metrics including P50, P95, P99, P999, and jitter (standard deviation / mean) calculations for both batch writes and reads in the L2 PebbleStore",
+        "details": "1. Add metrics collection to PebbleStore operations\n2. Implement P50, P95, P99, P999 percentile tracking\n3. Calculate jitter as standard deviation / mean\n4. Add Prometheus-compatible metrics export\n5. Create benchmark to verify metrics accuracy\n6. Document metrics collection approach",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          12
+        ],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 30,
+        "title": "Create mixed workload benchmark for Helios L2 store",
+        "description": "Implement benchmark that simulates realistic MCTS workload with 1% critical (durable) writes and 99% speculative (throwaway) writes to validate performance under production-like conditions",
+        "details": "1. Create benchmark simulating MCTS patterns (1% critical, 99% speculative)\n2. Measure batch write performance for both types\n3. Track memory usage and GC pressure\n4. Verify cleanup of speculative commits\n5. Test crash recovery with mixed workload\n6. Compare performance vs pure critical writes",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          12
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 31,
+        "title": "POC hierarchical checkpoint system for Event Sourcing",
+        "description": "Implement proof-of-concept for hierarchical checkpoints to reduce Event Sourcing replay time from 47ms to <5ms for random access patterns in MCTS",
+        "details": "1. Design hierarchical checkpoint architecture\n2. Implement checkpoint creation at key intervals\n3. Optimize replay from nearest checkpoint\n4. Benchmark random access performance (<5ms target)\n5. Test memory overhead vs performance trade-off\n6. Document viability for production use",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          12
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 32,
+        "title": "Implement MCTS-aware cache prefetching for Helios",
+        "description": "Build predictive cache system that uses MCTS patterns (UCB1 score, visit count, tree depth) to prefetch likely-to-be-accessed nodes, targeting 60%+ cache hit rate",
+        "details": "1. Extract MCTS access pattern features (UCB1, visits, depth)\n2. Implement pattern learning from historical access\n3. Build prefetch queue based on predictions\n4. Target 60%+ cache hit rate for MCTS operations\n5. Optimize memory usage vs hit rate trade-off\n6. Create benchmarks showing improvement",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          12
+        ],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 33,
+        "title": "Research GPU-accelerated MCTS storage implications",
+        "description": "Investigate how GPU-accelerated MCTS affects storage architecture requirements, including batch processing patterns, memory hierarchy, and potential for GPU-resident storage",
+        "details": "1. Research GPU MCTS implementations and patterns\n2. Analyze storage access patterns in GPU context\n3. Investigate GPU memory hierarchy implications\n4. Explore GPU-resident storage options\n5. Document architectural recommendations\n6. POC GPU-aware storage optimizations if viable",
+        "testStrategy": "",
+        "status": "pending",
+        "dependencies": [
+          12
+        ],
+        "priority": "low",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-13T20:29:44.465Z",
+      "updated": "2025-08-26T07:23:16.934Z",
+      "description": "PRD5 implementation tasks for Oppie Thunder AI Engineering Partner v5.0"
+    }
+  },
+  "eddiet": {
+    "tasks": [
+      {
+        "id": 10,
+        "title": "Implement Hierarchical Planner Engine with Plan-as-Code DSL",
+        "description": "Build the core planning system that converts high-level goals into structured, executable task trees using YAML-based DSL",
+        "details": "• Define Plan-as-Code DSL v0.1 schema in YAML\n• Implement task decomposition algorithm for breaking down high-level objectives\n• Create node dependency graph management\n• Build validation oracle system for each task node\n• Implement budget tracking (tokens and time) per node\n• Create tool_to_use mapping system for agent assignment\n• Design northStarMetric tracking system\n• Implement plan serialization/deserialization\n• Add plan validation and contract verification",
+        "testStrategy": "• Unit tests for DSL parsing and validation\n• Property tests for dependency graph acyclicity\n• Integration tests for end-to-end plan generation\n• Test oracle validation mechanisms\n• Benchmark plan generation time < 2s for complex tasks",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Build Hot-Loop Sandbox with Firecracker/gVisor Integration",
+        "description": "Create high-performance, memory-level virtualization environment for MCTS exploration with sub-second iteration times",
+        "details": "• Evaluate and select virtualization technology (Firecracker vs gVisor vs Devcontainer)\n• Implement persistent VM pool management\n• Create hot-state container provisioning system\n• Build sandbox lifecycle management (create, execute, destroy)\n• Implement resource isolation and limits\n• Add network isolation and security sandboxing\n• Create fast file system mounting with overlayfs\n• Build sandbox metrics and monitoring\n• Implement sandbox pooling for instant availability\n• Add crash recovery and automatic restart mechanisms",
+        "testStrategy": "• Benchmark sandbox creation time < 100ms\n• Test resource isolation with stress tests\n• Security testing for escape prevention\n• Concurrent sandbox execution tests (100+ parallel)\n• Memory leak detection and cleanup verification",
+        "status": "in-progress",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Implement CAS + COW State Management System",
+        "description": "Build content-addressable storage with copy-on-write snapshots for zero-cost state management in MCTS",
+        "details": "• Implement content-addressable storage with SHA256 hashing\n• Build copy-on-write snapshot mechanism using overlayfs\n• Create incremental state tracking system\n• Implement lazy evaluation for state changes\n• Build state merkle tree for verification\n• Add state compression and deduplication\n• Implement atomic state transitions\n• Create state garbage collection\n• Build state caching layer for hot paths\n• Add state persistence and recovery",
+        "testStrategy": "• Property tests for state consistency\n• Benchmark state switch time < 10ms\n• Test deduplication efficiency > 80%\n• Concurrent state modification tests\n• Crash recovery and integrity tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Create Multi-Dimensional Reward Function System",
+        "description": "Build comprehensive evaluation system with functional, non-functional, infrastructure, and human factors scoring",
+        "details": "• Define reward function interface and metrics\n• Implement functional metrics (test coverage, performance benchmarks)\n• Add code quality metrics (complexity, readability scores)\n• Build infrastructure cost modeling (cold start, memory, connections)\n• Implement token cost tracking and optimization\n• Add risk scoring system (CVE scanning, permission analysis)\n• Create human review time estimation model\n• Implement DPO (Direct Preference Optimization) for weight learning\n• Build metric aggregation and normalization\n• Add configurable weight profiles for different contexts",
+        "testStrategy": "• Unit tests for each metric calculation\n• Integration tests for reward aggregation\n• A/B testing framework for preference learning\n• Benchmark metric calculation < 100ms\n• Validate metric consistency and reproducibility",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Implement MCTS Engine with Hot-Loop Integration",
+        "description": "Build Monte Carlo Tree Search engine optimized for sub-5-second iterations in hot sandbox environment",
+        "details": "• Implement core MCTS algorithm (selection, expansion, simulation, backpropagation)\n• Build UCB1 selection strategy with configurable exploration constant\n• Integrate with hot-loop sandbox for rapid simulations\n• Implement parallel rollout execution\n• Add progressive widening for large action spaces\n• Build node pruning and memory management\n• Implement RAVE (Rapid Action Value Estimation)\n• Add virtual loss for parallel MCTS\n• Create checkpoint and resume functionality\n• Build MCTS visualization and debugging tools",
+        "testStrategy": "• Unit tests for MCTS components\n• Integration tests with sandbox environment\n• Benchmark iteration time < 5s\n• Test convergence on known problems\n• Parallel execution correctness tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Create Agent Orchestration System",
+        "description": "Build system for coordinating multiple specialized AI agents (TDD, Security, Performance, etc.) within MCTS framework",
+        "details": "• Define agent interface and communication protocol\n• Implement agent registry and discovery\n• Build task distribution engine\n• Create agent capability matching system\n• Implement parallel agent execution\n• Add agent health monitoring\n• Build result aggregation system\n• Create agent versioning and updates\n• Implement agent sandboxing\n• Add agent performance tracking",
+        "testStrategy": "• Unit tests for agent coordination\n• Integration tests with multiple agents\n• Load balancing and distribution tests\n• Fault tolerance and recovery tests\n• Performance benchmarks for agent overhead",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 21,
+        "title": "Build User Trust Interface and Visualization Dashboard",
+        "description": "Create comprehensive UI for visualizing MCTS exploration, decisions, and building user trust",
+        "details": "• Design responsive React dashboard architecture\n• Implement real-time MCTS tree visualization\n• Build decision path exploration interface\n• Create risk and trade-off visualization\n• Add performance metrics dashboard\n• Implement cost tracking visualizations\n• Build interactive decision replay\n• Create preference feedback system\n• Add collaborative review features\n• Implement dark mode and accessibility",
+        "testStrategy": "• Unit tests for React components\n• E2E tests with Playwright\n• Performance tests for large visualizations\n• Accessibility compliance testing\n• User experience testing sessions",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 22,
+        "title": "Implement Security and Compliance Framework",
+        "description": "Build comprehensive security scanning, vulnerability detection, and compliance checking system",
+        "details": "• Integrate security scanning tools (gosec, Snyk, CodeQL)\n• Build CVE vulnerability tracking system\n• Implement permission analysis framework\n• Create security risk scoring\n• Add compliance policy engine\n• Build secret detection and prevention\n• Implement security testing automation\n• Create security audit logging\n• Add zero-trust architecture support\n• Build security remediation suggestions",
+        "testStrategy": "• Security scanning accuracy tests\n• Vulnerability detection validation\n• Compliance policy enforcement tests\n• Secret detection effectiveness tests\n• Security audit trail verification",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 24,
+        "title": "Build Testing and Quality Assurance System",
+        "description": "Implement comprehensive testing framework with TDD enforcement, coverage tracking, and quality gates",
+        "details": "• Implement TDD enforcement framework\n• Build test generation capabilities\n• Create coverage tracking and reporting\n• Implement property-based testing\n• Add mutation testing support\n• Build test flakiness detection\n• Create regression test suite\n• Implement performance testing framework\n• Add integration test orchestration\n• Build quality gate enforcement",
+        "testStrategy": "• Meta-tests for testing framework\n• Coverage accuracy validation\n• Test generation effectiveness tests\n• Quality gate enforcement tests\n• Performance testing validation",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 27,
+        "title": "Build End-to-End Integration and Deployment Pipeline",
+        "description": "Create complete integration of all components with automated deployment and orchestration",
+        "details": "• Integrate all system components\n• Build end-to-end workflow automation\n• Create deployment orchestration\n• Implement blue-green deployments\n• Add canary release support\n• Build rollback automation\n• Create health check system\n• Implement disaster recovery\n• Add multi-environment support\n• Build deployment analytics",
+        "testStrategy": "• End-to-end integration tests\n• Deployment automation tests\n• Rollback scenario tests\n• Disaster recovery drills\n• Multi-environment validation",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "low",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-13T21:24:59.878Z",
+      "updated": "2025-09-07T15:02:48.718Z",
+      "description": "Eddie T - Tech Lead tasks for PRD5 implementation (high complexity, core architecture)"
+    }
+  },
+  "samuelw": {
+    "tasks": [
+      {
+        "id": 9,
+        "title": "React PWA Frontend",
+        "description": "Deliver Progressive Web App with real-time MCTS visualization, offline support, and performance optimizations.",
+        "details": "• Scaffold with Vite + React-Router + Redux Toolkit\n• WebSocket client to `/ws/progress` streaming MCTS nodes (JSON)\n• BufferedIPCClient (mirror of backend) → batching 100 msgs per 16 ms\n• VirtualScroll component (`react-window`) for node list\n• Service Worker via Workbox: precache static, dynamic caching IndexedDB (idb-keyval)\n• Web Worker `mcts.worker.ts` to offload heavy diff rendering\n• Lighthouse target: TTI<5 s, PWA score≥95",
+        "testStrategy": "• Vitest: 85 % coverage on reducers & components\n• Playwright E2E: create OAuth2 task flow passes\n• Web Vitals collection – assert CLS<0.1, FID<100 ms\n• Visual regression with Storybook + Chromatic",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Build Infrastructure-as-Code Integration Layer",
+        "description": "Create platform-native integration for generating and managing infrastructure alongside application code",
+        "details": "• Implement Terraform/Pulumi code generation\n• Build CloudFormation template management\n• Create platform API integrations (AWS, GCP, Azure)\n• Implement resource provisioning automation\n• Add infrastructure cost estimation\n• Build preview environment deployment system\n• Create infrastructure drift detection\n• Implement rollback and disaster recovery\n• Add infrastructure compliance checking\n• Build multi-cloud abstraction layer",
+        "testStrategy": "• Unit tests for IaC generation\n• Integration tests with cloud provider APIs\n• Cost estimation accuracy tests\n• Preview environment deployment tests\n• Rollback and recovery scenario tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 16,
+        "title": "Create Decision Package Generation System",
+        "description": "Build comprehensive decision package system with interactive visualizations, risk reports, and reproducible environments",
+        "details": "• Design decision package data structure\n• Implement interactive MCTS decision tree visualization\n• Build risk and trade-off report generation\n• Create one-click reproducible environment provisioning\n• Add decision rationale documentation\n• Implement alternative path exploration viewer\n• Build performance impact analysis\n• Create security change highlighting\n• Add rollback plan generation\n• Implement decision package versioning",
+        "testStrategy": "• Unit tests for package generation\n• UI tests for interactive visualizations\n• Integration tests for environment reproduction\n• User acceptance testing for clarity\n• Performance tests for large decision trees",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Implement Episode Store and Learning Engine",
+        "description": "Build trajectory storage system for capturing task episodes and enabling continuous learning",
+        "details": "• Design episode data schema and storage format\n• Implement trajectory capture and serialization\n• Build nearest-neighbor retrieval system\n• Create episode similarity scoring\n• Implement experience replay mechanism\n• Add policy network fine-tuning pipeline\n• Build value network update system\n• Create batch learning scheduler\n• Implement online learning capabilities\n• Add episode compression and archival",
+        "testStrategy": "• Unit tests for episode storage\n• Integration tests for retrieval system\n• Learning convergence tests\n• Performance tests for large episode stores\n• Data integrity and recovery tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Build Observability and Metrics Platform",
+        "description": "Create comprehensive observability system for monitoring, logging, and tracing all Oppie operations",
+        "details": "• Implement OpenTelemetry integration\n• Build custom metrics collection system\n• Create distributed tracing for MCTS operations\n• Implement log aggregation and analysis\n• Add performance profiling tools\n• Build real-time dashboard system\n• Create alerting and anomaly detection\n• Implement SLO/SLI tracking\n• Add cost tracking and optimization metrics\n• Build debugging and troubleshooting tools",
+        "testStrategy": "• Unit tests for metric collection\n• Integration tests with monitoring backends\n• Load testing for high-volume metrics\n• Dashboard functionality tests\n• Alert accuracy and latency tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Implement GitHub Integration and PR Automation",
+        "description": "Build GitHub integration for automated PR creation with decision packages and review workflows",
+        "details": "• Implement GitHub API integration\n• Build automated PR creation system\n• Add decision package attachment to PRs\n• Create PR comment bot for updates\n• Implement review feedback processing\n• Add merge automation with checks\n• Build branch protection integration\n• Create CI/CD pipeline triggers\n• Implement rollback automation\n• Add PR metrics and analytics",
+        "testStrategy": "• Unit tests for GitHub API calls\n• Integration tests with test repositories\n• PR creation and update workflow tests\n• Review feedback processing tests\n• CI/CD trigger verification tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 23,
+        "title": "Create Performance Optimization Layer",
+        "description": "Build high-performance optimization layer with caching, parallel processing, and resource management",
+        "details": "• Implement multi-tier caching system (memory, SSD, disk)\n• Build parallel task execution engine\n• Create resource pool management\n• Implement zero-copy data pipelines\n• Add connection pooling and reuse\n• Build lazy evaluation system\n• Create batch processing optimization\n• Implement predictive prefetching\n• Add memory pressure management\n• Build performance profiling integration",
+        "testStrategy": "• Performance benchmark suite\n• Cache hit ratio optimization tests\n• Parallel execution correctness tests\n• Resource utilization tests\n• Memory leak detection tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "medium",
+        "subtasks": []
+      },
+      {
+        "id": 25,
+        "title": "Implement Configuration and Feature Flag System",
+        "description": "Build dynamic configuration management with feature flags, A/B testing, and gradual rollout capabilities",
+        "details": "• Design configuration schema and validation\n• Implement feature flag engine\n• Build A/B testing framework\n• Create gradual rollout system\n• Add configuration hot-reload\n• Implement user segmentation\n• Build configuration versioning\n• Create configuration audit trail\n• Add emergency kill switches\n• Implement configuration synchronization",
+        "testStrategy": "• Feature flag toggle tests\n• A/B test distribution validation\n• Configuration hot-reload tests\n• Rollout percentage accuracy tests\n• Kill switch effectiveness tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "low",
+        "subtasks": []
+      },
+      {
+        "id": 26,
+        "title": "Create Documentation and Knowledge Base System",
+        "description": "Build comprehensive documentation generation, API documentation, and knowledge base management",
+        "details": "• Implement automatic documentation generation\n• Build API documentation system\n• Create interactive tutorials\n• Implement knowledge base search\n• Add documentation versioning\n• Build example code library\n• Create video tutorial integration\n• Implement documentation feedback system\n• Add multilingual support\n• Build documentation analytics",
+        "testStrategy": "• Documentation generation accuracy tests\n• API documentation completeness tests\n• Search relevance tests\n• Tutorial functionality tests\n• Multilingual content tests",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "low",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-13T21:25:05.219Z",
+      "updated": "2025-08-13T21:25:05.219Z",
+      "description": "Samuel W - Junior SDE tasks for PRD5 implementation (moderate complexity, supporting systems)"
+    }
+  }
+}

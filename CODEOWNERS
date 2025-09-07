@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: 2025 Yongbing Tang and contributors
+# SPDX-License-Identifier: MIT
+
+# Global code owners
+* @eddie @samuel
+
+# Backend (Go) - Eddie's expertise
+/backend/ @eddie
+/interfaces/ @eddie
+*.go @eddie
+
+# Frontend (React) - Samuel's expertise
+/frontend/ @samuel
+*.tsx @samuel
+*.ts @samuel
+*.jsx @samuel
+*.js @samuel
+
+# Infrastructure - Samuel with Eddie's review
+/.github/ @samuel @eddie
+/scripts/ @samuel @eddie
+Makefile @samuel @eddie
+
+# Documentation - Both
+*.md @eddie @samuel
+/docs/ @eddie @samuel
+
+# TaskMaster configuration - Both
+/.taskmaster/ @eddie @samuel

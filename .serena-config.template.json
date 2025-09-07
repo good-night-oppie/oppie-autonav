@@ -1,0 +1,157 @@
+{
+  "name": "{{PROJECT_NAME}} Serena Configuration",
+  "version": "1.0.0",
+  "description": "Serena semantic code analysis configuration for {{PROJECT_NAME}} project",
+  
+  "project": {
+    "type": "{{PROJECT_TYPE|typescript-express-react}}",
+    "root": ".",
+    "sourceDirectories": ["{{SOURCE_DIR|src}}"],
+    "testDirectories": ["{{TEST_DIR|tests}}"],
+    "ignorePatterns": ["node_modules", "dist", "coverage", "{{ADDITIONAL_IGNORE}}"]
+  },
+  
+  "symbolAnalysis": {
+    "enabled": true,
+    "requirements": {
+      "documentation": {
+        "enforceJSDoc": true,
+        "requireReturnTypes": true,
+        "requireParamDescriptions": true,
+        "excludePatterns": ["*.test.ts", "*.spec.ts", "{{EXCLUDE_PATTERNS}}"]
+      },
+      "naming": {
+        "classes": "{{CLASS_NAMING|PascalCase}}",
+        "interfaces": "{{INTERFACE_NAMING|PascalCase}}",
+        "functions": "{{FUNCTION_NAMING|camelCase}}",
+        "constants": "{{CONSTANT_NAMING|UPPER_SNAKE_CASE}}",
+        "privateMembers": "{{PRIVATE_NAMING|_prefixed}}"
+      },
+      "complexity": {
+        "maxCyclomaticComplexity": "{{MAX_CYCLOMATIC|10}}",
+        "maxCognitiveComplexity": "{{MAX_COGNITIVE|15}}",
+        "maxNestingDepth": "{{MAX_NESTING|4}}",
+        "maxParameterCount": "{{MAX_PARAMETERS|5}}"
+      }
+    }
+  },
+  
+  "architecturalConstraints": {
+    "layers": [
+      {
+        "name": "{{LAYER_1_NAME|routes}}",
+        "path": "{{LAYER_1_PATH|src/routes}}",
+        "canImportFrom": ["{{LAYER_1_IMPORTS}}"],
+        "cannotImportFrom": ["{{LAYER_1_CANNOT_IMPORT}}"]
+      },
+      {
+        "name": "{{LAYER_2_NAME|services}}",
+        "path": "{{LAYER_2_PATH|src/services}}",
+        "canImportFrom": ["{{LAYER_2_IMPORTS}}"],
+        "cannotImportFrom": ["{{LAYER_2_CANNOT_IMPORT}}"]
+      },
+      "{{ADDITIONAL_LAYERS}}"
+    ],
+    "enforcement": {
+      "strictMode": true,
+      "allowExceptions": ["// @serena-ignore"],
+      "reportViolations": true
+    }
+  },
+  
+  "codePatterns": {
+    "errorHandling": {
+      "pattern": "{{ERROR_PATTERN|CustomError}}",
+      "enforceAsyncTryCatch": true,
+      "requireErrorTypes": true,
+      "centralizedErrorHandler": "{{ERROR_HANDLER_PATH|src/middleware/error-handler.ts}}"
+    },
+    "logging": {
+      "service": "{{LOGGER_SERVICE|logger}}",
+      "enforceStructuredLogs": true,
+      "prohibitConsoleLog": true,
+      "allowedInTests": true
+    },
+    "apiDesign": {
+      "validation": "{{VALIDATION_LIBRARY|zod}}",
+      "responseFormat": "{{RESPONSE_FORMAT|consistent}}",
+      "errorFormat": "{{ERROR_FORMAT|standardized}}",
+      "versioningStrategy": "{{VERSIONING|path}}"
+    }
+  },
+  
+  "memoryTracking": {
+    "enabled": true,
+    "categories": [
+      {
+        "name": "api-patterns",
+        "description": "API design patterns and conventions",
+        "autoCapture": ["route definitions", "validation schemas", "error handling"]
+      },
+      {
+        "name": "performance-optimizations",
+        "description": "Performance improvements and bottleneck fixes",
+        "autoCapture": ["caching strategies", "query optimizations", "streaming implementations"]
+      },
+      {
+        "name": "security-measures",
+        "description": "Security implementations and vulnerability fixes",
+        "autoCapture": ["authentication", "authorization", "input validation"]
+      },
+      {
+        "name": "architectural-decisions",
+        "description": "Key architectural choices and their rationale",
+        "autoCapture": ["service boundaries", "data flow", "dependency choices"]
+      },
+      "{{ADDITIONAL_MEMORY_CATEGORIES}}"
+    ],
+    "syncToOppieDevkit": true
+  },
+  
+  "qualityMetrics": {
+    "thresholds": {
+      "documentation": "{{DOC_THRESHOLD|90}}",
+      "typeAnnotations": "{{TYPE_THRESHOLD|95}}",
+      "testCoverage": "{{TEST_COVERAGE_THRESHOLD|80}}",
+      "maintainabilityIndex": "{{MAINTAINABILITY_THRESHOLD|75}}"
+    },
+    "reporting": {
+      "format": "json",
+      "outputPath": ".serena/quality-report.json",
+      "includeDetails": true
+    }
+  },
+  
+  "integration": {
+    "superClaude": {
+      "enabled": true,
+      "shareSymbolAnalysis": true,
+      "provideSuggestions": true
+    },
+    "taskMaster": {
+      "enabled": true,
+      "validateBeforeCommit": true,
+      "blockOnViolations": true
+    },
+    "ide": {
+      "provideHints": true,
+      "realTimeAnalysis": false,
+      "quickFixes": true
+    },
+    "oppieDevkit": {
+      "syncConfiguration": true,
+      "shareKnowledge": true
+    }
+  },
+  
+  "templateVariables": {
+    "PROJECT_NAME": "Your project name",
+    "PROJECT_TYPE": "Project type (e.g., typescript-express-react)",
+    "SOURCE_DIR": "Source directory (default: src)",
+    "TEST_DIR": "Test directory (default: tests)",
+    "LAYER_*": "Architecture layer definitions",
+    "MAX_*": "Complexity thresholds",
+    "*_NAMING": "Naming conventions",
+    "*_THRESHOLD": "Quality metric thresholds"
+  }
+}

@@ -1,0 +1,146 @@
+# Task ID: 10
+# Title: Implement Hierarchical Planner Engine with Plan-as-Code DSL
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Build the core planning system that converts high-level goals into structured, executable task trees using YAML-based DSL
+# Details:
+• Define Plan-as-Code DSL v0.1 schema in YAML
+• Implement task decomposition algorithm for breaking down high-level objectives
+• Create node dependency graph management
+• Build validation oracle system for each task node
+• Implement budget tracking (tokens and time) per node
+• Create tool_to_use mapping system for agent assignment
+• Design northStarMetric tracking system
+• Implement plan serialization/deserialization
+• Add plan validation and contract verification
+
+# Test Strategy:
+• Unit tests for DSL parsing and validation
+• Property tests for dependency graph acyclicity
+• Integration tests for end-to-end plan generation
+• Test oracle validation mechanisms
+• Benchmark plan generation time < 2s for complex tasks
+
+# Subtasks:
+## 1. DSL v0.1 Schema Design with Minimal Semantics [in-progress]
+### Dependencies: None
+### Description: Design the Plan-as-Code DSL schema with nodes, edges (DAG), tool_to_use, I/O schema, and lightweight pre/post conditions
+### Details:
+Define YAML structure for:
+- Nodes with unique IDs and tool bindings
+- DAG edges with dependency relationships
+- tool_to_use field mapping to concrete agents/actions
+- Input/output schema per node (JSON-Schema compatible)
+- Lightweight pre/post conditions (file existence, command exit status, simple content checks)
+- Cross-node I/O contract specifications
+
+Success Criteria:
+- Schema supports all required fields
+- Examples parse without errors
+- Pre/post conditions are verifiable
+
+## 2. Parser & Static Validation with Semantic Checks [pending]
+### Dependencies: 10.1
+### Description: Build YAML parser with structural and semantic validation including JSON-Schema/Pydantic checks and cross-node I/O contract verification
+### Details:
+Implement parser and validator for:
+- YAML to model parsing with error recovery
+- JSON-Schema/Pydantic structural validation
+- Topology-order and cycle detection for DAG
+- Cross-node I/O contract checks (upstream outputs satisfy downstream inputs)
+- Pre/post condition semantic validation
+- Generate-validate-self-repair loop (2-3 attempts max)
+
+Success Criteria:
+- Schema pass rate ≥ 95% on test suite
+- Detects all cycles and invalid contracts
+- Self-repair succeeds in 80% of fixable cases
+- Clear error messages for validation failures
+
+## 3. Task Decomposition Planner with Self-Repair [pending]
+### Dependencies: 10.1, 10.2
+### Description: LLM-driven decomposition that produces DSL-conformant plans with generate→validate→self-repair loop
+### Details:
+Build the Planner component:
+- LLM prompting for task decomposition into DSL format
+- Integration with parser/validator for immediate validation
+- Self-repair mechanism when validation fails (max 3 attempts)
+- Pre-execution contract inspection after topology sort
+- Error feedback loop to improve generation
+
+Engineering Techniques:
+1. Generate-validate-self-repair loop for higher success rate
+2. Contract inspection before execution to prevent invalid plans
+
+Success Criteria:
+- First-attempt DSL compliance ≥ 70%
+- After self-repair: DSL compliance ≥ 95%
+- Plans satisfy all I/O contracts before execution
+- Deterministic output for same input/environment
+
+## 4. Dispatcher with Tool Binding [pending]
+### Dependencies: 10.2
+### Description: Map tool_to_use to concrete agents/actions and normalize outputs to declared schema
+### Details:
+Implement the dispatcher component:
+- Tool registry mapping tool_to_use strings to concrete implementations
+- Agent/action invocation with proper parameter passing
+- Output normalization to match declared I/O schemas
+- Error handling and retry logic for tool failures
+- Tool capability discovery and validation
+
+Success Criteria:
+- All registered tools invoke correctly
+- Output always conforms to declared schema
+- Failed tools produce actionable error messages
+- Tool binding is deterministic and traceable
+
+## 5. Verification Oracles for Success/Failure [pending]
+### Dependencies: 10.1
+### Description: Run per-node postconditions to decide success/failure and emit readable diagnostics
+### Details:
+Build verification oracle framework:
+- Execute pre-conditions before node execution
+- Execute post-conditions after node completion
+- Support multiple oracle types:
+  - File existence checks
+  - Command exit status validation
+  - Content pattern matching
+  - Schema compliance verification
+- Generate actionable diagnostics for failures
+- Collect success/failure metrics
+
+Success Criteria:
+- Node-level success ≥ 90% on test suite
+- Every failed node produces clear diagnostics
+- Identifies which specific pre/post condition failed
+- Oracle execution is deterministic
+
+## 6. Simple Sequential Executor with Bounded Retry [pending]
+### Dependencies: 10.2, 10.3, 10.4, 10.5
+### Description: Sequential DAG execution with bounded per-node retry, leaving advanced search (LATS/MCTS) for later iterations
+### Details:
+Implement basic execution engine:
+- Topological sort for execution order
+- Sequential node execution following DAG dependencies
+- Per-node retry logic (max 1 retry by default)
+- Integration with dispatcher for tool execution
+- Integration with oracles for verification
+- Execution trace logging for debugging
+- Graceful failure handling with rollback points
+
+Note: Advanced search algorithms (LATS/MCTS) deferred to post-MVP
+
+Success Criteria:
+- End-to-end completion ≥ 80% on test suite
+- Execution follows correct DAG order
+- Retry mechanism improves success rate by ≥15%
+- Stable execution traces (deterministic ignoring timestamps)
+- Failure transparency with clear error reporting
+<info added on 2025-08-14T18:16:18.225Z>
+Important clarification of scope:
+
+This subtask implements only the Minimum-Viable Executor. It executes a validated DAG linearly (topological order), invokes the Dispatcher and Verification Oracles, and applies a single bounded retry (default 1) per node. It does NOT include any search tree construction, backtracking, dynamic replanning, MCTS, LATS, beam search, or related exploration algorithms—those are deferred to later tasks (e.g., Task 14).
+</info added on 2025-08-14T18:16:18.225Z>
+

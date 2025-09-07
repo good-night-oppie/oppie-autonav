@@ -1,0 +1,24 @@
+# Task ID: 14
+# Title: Implement MCTS Engine with Hot-Loop Integration
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Build Monte Carlo Tree Search engine optimized for sub-5-second iterations in hot sandbox environment
+# Details:
+• Implement core MCTS algorithm (selection, expansion, simulation, backpropagation)
+• Build UCB1 selection strategy with configurable exploration constant
+• Integrate with hot-loop sandbox for rapid simulations
+• Implement parallel rollout execution
+• Add progressive widening for large action spaces
+• Build node pruning and memory management
+• Implement RAVE (Rapid Action Value Estimation)
+• Add virtual loss for parallel MCTS
+• Create checkpoint and resume functionality
+• Build MCTS visualization and debugging tools
+
+# Test Strategy:
+• Unit tests for MCTS components
+• Integration tests with sandbox environment
+• Benchmark iteration time < 5s
+• Test convergence on known problems
+• Parallel execution correctness tests

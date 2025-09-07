@@ -1,0 +1,167 @@
+# Task ID: 12
+# Title: Implement CAS + COW State Management System
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Build content-addressable storage with copy-on-write snapshots for zero-cost state management in MCTS
+# Details:
+• Implement content-addressable storage with SHA256 hashing
+• Build copy-on-write snapshot mechanism using overlayfs
+• Create incremental state tracking system
+• Implement lazy evaluation for state changes
+• Build state merkle tree for verification
+• Add state compression and deduplication
+• Implement atomic state transitions
+• Create state garbage collection
+• Build state caching layer for hot paths
+• Add state persistence and recovery
+
+# Test Strategy:
+• Property tests for state consistency
+• Benchmark state switch time < 10ms
+• Test deduplication efficiency > 80%
+• Concurrent state modification tests
+• Crash recovery and integrity tests
+
+# Subtasks:
+## 1. Day 0: TDD Environment Setup & Project Scaffolding [pending]
+### Dependencies: None
+### Description: Set up Go development environment with TDD toolchain including pre-commit hooks, coverage enforcement, and Helios project structure
+### Details:
+1. Install Go, Git, RocksDB libraries (librocksdb-dev)
+2. Initialize Go module: github.com/oppie/helios-engine
+3. Create project structure: pkg/helios/{vst,l1cache,objstore,types}, internal/util, cmd/helios-cli
+4. Configure pre-commit hooks with golangci-lint, go fmt, and go test -short
+5. Create Makefile with test, cover (85% threshold), and lint targets
+6. Set up spec/golden and docs directories for TDD artifacts
+7. Verify setup with initial smoke test
+
+## 2. Day 1: Core Types & BLAKE3 Hashing (TDD) [pending]
+### Dependencies: None
+### Description: Define Helios core types (Hash, Object, Tree, Blob) and implement BLAKE3 content hashing with strict TDD
+### Details:
+TDD Cycle:
+1. RED: Write failing tests in internal/util/hash_test.go with table-driven test cases for BLAKE3 and SHA256
+2. Define types in pkg/helios/types/types.go: Hash, HashAlgorithm, ObjectType, Object interface
+3. GREEN: Implement HashContent() in internal/util/hash.go using lukechampine.com/blake3
+4. REFACTOR: Add SHA256 support, optimize hash operations
+5. Verify 85%+ coverage with make cover
+Expected: Hash computation < 1μs for small objects, content-addressing foundation established
+
+## 3. Day 2-3: L0 Virtual State Tree (VST) Implementation [pending]
+### Dependencies: 12.2
+### Description: Build the in-memory Virtual State Tree for nanosecond-level operations using immutable data structures
+### Details:
+TDD Implementation:
+1. RED: Write tests for VST operations: WriteFile(), DeleteFile(), GetRootHash()
+2. Implement VST using Arc<Node> for zero-copy sharing between snapshots
+3. Build path-based trie structure with lazy evaluation
+4. GREEN: Implement copy-on-write semantics for modifications
+5. Add batch operations for atomic multi-file changes
+6. REFACTOR: Optimize memory layout for cache-friendly access
+Performance target: < 70μs for commit operations in L0
+Test invariants: Tree immutability, hash consistency, memory sharing verification
+
+## 4. Day 4-5: L1 Ring Buffer Cache Implementation [pending]
+### Dependencies: 12.3
+### Description: Build compressed object cache using ring buffer for microsecond-level warm data access
+### Details:
+TDD Implementation:
+1. RED: Write tests for cache operations: Get(), Put(), Eviction policy
+2. Implement fixed-size ring buffer with LRU eviction (256MB default)
+3. Add LZ4 compression for objects before caching
+4. GREEN: Build concurrent-safe access with sync.RWMutex
+5. Implement cache statistics and hit-rate monitoring
+6. REFACTOR: Optimize for cache-line alignment and NUMA awareness
+Performance target: < 10μs for cache hits, > 90% hit rate for hot objects
+Test: Concurrent access safety, eviction correctness, compression ratio > 2x
+
+## 5. Day 6-7: L2 RocksDB Persistent Store [pending]
+### Dependencies: 12.4
+### Description: Implement persistent object store using RocksDB for millisecond-level cold storage
+### Details:
+TDD Implementation:
+1. RED: Write tests for persistent operations: Get(), PutBatch(), Delete()
+2. Integrate RocksDB with Go bindings (grocksdb or tecbot/gorocksdb)
+3. Implement batch writes for atomic multi-object persistence
+4. GREEN: Add Write-Ahead-Log (WAL) for crash consistency
+5. Configure column families for objects vs metadata separation
+6. REFACTOR: Tune RocksDB options (block cache, bloom filters, compaction)
+Performance target: < 5ms for batch writes, < 2ms for reads
+Test: Crash recovery, batch atomicity, 1M+ objects stress test
+
+## 6. Day 8: HeliosEngine State Manager Integration [pending]
+### Dependencies: 12.5
+### Description: Integrate L0/L1/L2 layers into unified HeliosEngine implementing StateManager interface
+### Details:
+TDD Implementation:
+1. RED: Write integration tests for StateManager API: Commit(), Restore(), Diff()
+2. Implement HeliosEngine orchestrating all three layers
+3. Build async pipeline: L0 → L1 → L2 with backpressure handling
+4. GREEN: Implement snapshot operations across layers
+5. Add Materialize() for selective file extraction
+6. REFACTOR: Optimize hot paths and minimize allocations
+Key APIs: Commit(Durability) → (SnapshotID, CommitMetrics), Diff(base, target) → DiffResult
+Test: End-to-end snapshot lifecycle, layer coordination, metric accuracy
+
+## 7. Day 9: Performance Optimization & Benchmarking [pending]
+### Dependencies: 12.6
+### Description: Optimize Helios for MCTS hot-loop requirements and establish performance baselines
+### Details:
+TDD Performance Work:
+1. Write benchmark tests for all critical paths using Go's testing.B
+2. Profile CPU and memory using pprof to identify bottlenecks
+3. Implement optimizations:
+   - Lock-free data structures where possible
+   - Memory pool allocation to reduce GC pressure
+   - Parallel hash computation for large trees
+   - Zero-allocation paths for hot operations
+4. Verify performance targets:
+   - Commit latency < 70μs (P99)
+   - Cache hit rate > 90%
+   - Memory usage < 512MB for 100K objects
+5. Create performance regression tests
+Test: Benchmark suite, stress tests with 1000 ops/sec, memory leak detection
+
+## 8. Day 10: MCTS Integration with CommitMetrics [pending]
+### Dependencies: 12.7
+### Description: Integrate Helios with MCTS engine and implement CommitMetrics feedback into reward functions
+### Details:
+Critical Integration:
+1. Update StateManager interface to return CommitMetrics:
+   - CommitLatency: time.Duration (sync hot path timing)
+   - NewObjects: int (number of new Tree/Blob objects)
+   - NewObjectsSize: int64 (bytes of new content)
+2. Implement metric collection in HeliosEngine.Commit()
+3. Wire metrics into MCTS reward function:
+   - engineCost += CommitLatency.Microseconds() * 0.01
+   - engineCost += NewObjects * 0.1
+   - totalReward = codeReward - engineCost
+4. This teaches AI "engineering taste" - penalizing wasteful operations
+5. Add telemetry for monitoring metric distributions
+Test: Metric accuracy, reward function integration, MCTS decision impact
+
+## 9. Day 11: Comprehensive Testing & Production Hardening [pending]
+### Dependencies: 12.8
+### Description: Complete test suite with property-based testing, chaos engineering, and production readiness verification
+### Details:
+Final Testing Phase:
+1. Property-based testing for core invariants:
+   - Content addressing: same content → same hash always
+   - Snapshot isolation: changes don't affect other snapshots
+   - Merkle tree properties: parent changes when child changes
+2. Chaos testing:
+   - Random kill -9 during operations
+   - Disk full scenarios
+   - Concurrent modification stress
+3. Integration test suite:
+   - Full MCTS exploration with 1000+ nodes
+   - Memory pressure scenarios
+   - Performance regression guards
+4. Production readiness:
+   - Monitoring/metrics endpoints
+   - Graceful shutdown handlers
+   - Configuration validation
+5. Documentation: API docs, architecture diagrams, runbooks
+Target: 85%+ test coverage, zero data loss under chaos, < 100ms P99 latency
+

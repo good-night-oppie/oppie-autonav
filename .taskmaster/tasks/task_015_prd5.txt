@@ -1,0 +1,110 @@
+# Task ID: 15
+# Title: Build Infrastructure-as-Code Integration Layer
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Create platform-native integration for generating and managing infrastructure alongside application code
+# Details:
+• Implement Terraform/Pulumi code generation
+• Build CloudFormation template management
+• Create platform API integrations (AWS, GCP, Azure)
+• Implement resource provisioning automation
+• Add infrastructure cost estimation
+• Build preview environment deployment system
+• Create infrastructure drift detection
+• Implement rollback and disaster recovery
+• Add infrastructure compliance checking
+• Build multi-cloud abstraction layer
+
+# Test Strategy:
+• Unit tests for IaC generation
+• Integration tests with cloud provider APIs
+• Cost estimation accuracy tests
+• Preview environment deployment tests
+• Rollback and recovery scenario tests
+
+# Subtasks:
+## 1. Define Requirements & High-Level Architecture [pending]
+### Dependencies: None
+### Description: Gather detailed functional, non-functional, security and compliance requirements and draft the overall architecture for the IaC Integration Layer.
+### Details:
+Deliverables: requirements specification, context diagram, component list, interface catalog, initial tech-stack decision matrix, baseline security posture, test strategy outline, milestone roadmap.
+
+## 2. Design Code Generation Engine [pending]
+### Dependencies: 15.1
+### Description: Produce detailed design for Terraform/Pulumi/CloudFormation code generation engine including DSL, templates, and plug-in system.
+### Details:
+Define APIs, data models, extensibility hooks; choose languages (Go, TypeScript), security controls (input validation, secret handling), unit/integration test matrix, sprint milestones.
+
+## 3. Implement Code Generation Engine MVP [pending]
+### Dependencies: 15.2
+### Description: Develop minimal viable code generation engine supporting core resources and unit test coverage.
+### Details:
+Implement parser, renderer, template store, secret redaction; integrate CI checks; deliver CLI/SDK; provide test harness and coverage reports.
+
+## 4. Develop Provider Adapter Framework [pending]
+### Dependencies: 15.2
+### Description: Create framework that allows pluggable cloud provider adapters with consistent CRUD interfaces.
+### Details:
+Define adapter interface (Init, Plan, Apply, Destroy), error model, auth strategy; implement mock adapter; document security scopes; add contract tests.
+
+## 5. Implement AWS Provider Adapter [pending]
+### Dependencies: 15.4
+### Description: Build adapter for AWS CloudFormation/Terraform with IAM handling and resource mapping.
+### Details:
+Support core services (VPC, EC2, S3, RDS); integrate STS auth; encryption at rest; unit and live-account integration tests; milestone demo.
+
+## 6. Implement GCP Provider Adapter [pending]
+### Dependencies: 15.4
+### Description: Build adapter for GCP Deployment Manager/Terraform with IAM and resource translation.
+### Details:
+Support VPC, GCE, GCS, CloudSQL; service account auth; KMS encryption; add integration tests in sandbox project; deliver performance benchmarks.
+
+## 7. Implement Azure Provider Adapter [pending]
+### Dependencies: 15.4
+### Description: Build adapter for Azure ARM/Bicep/Terraform with RBAC and resource mapping.
+### Details:
+Support VNet, VM, Blob, SQL; managed identity auth; Key Vault integration; run integration tests in dev subscription; produce adapter docs.
+
+## 8. Build Infrastructure Cost Estimation Module [pending]
+### Dependencies: 15.3, 15.4, 15.5, 15.6, 15.7
+### Description: Implement real-time cost estimation using provider pricing APIs and internal rate cards.
+### Details:
+Design cost model, caching layer, currency conversion; expose REST/GraphQL endpoints; add accuracy tests and alerts for price drift.
+
+## 9. Build Drift Detection & Remediation Module [pending]
+### Dependencies: 15.3, 15.4
+### Description: Detect configuration drift between declared IaC and live resources and enable automated or manual remediation.
+### Details:
+Implement snapshot collector, diff engine, remediation planner; add RBAC controls; create alerting hooks; develop chaos tests.
+
+## 10. Build Preview Environment Deployment System [pending]
+### Dependencies: 15.3, 15.4, 15.5, 15.6, 15.7
+### Description: Create on-demand ephemeral environments for pull requests with automatic teardown.
+### Details:
+Integrate with GitHub webhooks; auto-generate unique namespaces; secure secrets; track TTL; write smoke tests and cost guardrails.
+
+## 11. Implement Compliance Checking & Policy Engine [pending]
+### Dependencies: 15.3, 15.4
+### Description: Add policy-as-code engine to validate configurations against security/compliance standards (CIS, SOC2).
+### Details:
+Use OPA/Rego; build rule library; integrate with CI; generate compliance reports; add unit/regression tests; set milestone for audit readiness.
+
+## 12. Implement Rollback & Disaster Recovery Module [pending]
+### Dependencies: 15.3, 15.4, 15.5, 15.6, 15.7
+### Description: Enable automatic rollback and DR workflows for failed deployments or outages.
+### Details:
+Design state checkpointing, versioned plans, cross-region replication; define RTO/RPO targets; implement fail-over tests and drills.
+
+## 13. Build Multi-Cloud Abstraction Layer & CI/CD Hooks [pending]
+### Dependencies: 15.3, 15.4, 15.5, 15.6, 15.7
+### Description: Provide unified API and integrate hooks for existing CI/CD systems to trigger IaC operations across clouds.
+### Details:
+Expose gRPC/REST endpoints; create CLI and GitHub Actions; ensure secure token propagation; performance/load tests; milestone for first cross-cloud deployment.
+
+## 14. End-to-End Integration Testing & Delivery Milestones [pending]
+### Dependencies: 15.8, 15.9, 15.10, 15.11, 15.12, 15.13
+### Description: Execute full-stack tests, finalize documentation, and define phased rollout plan.
+### Details:
+Create test matrix covering provisioning, cost, drift, compliance, rollback; collect KPIs; generate release notes; schedule GA and post-launch monitoring.
+

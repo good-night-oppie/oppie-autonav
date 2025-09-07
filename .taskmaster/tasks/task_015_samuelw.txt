@@ -1,0 +1,24 @@
+# Task ID: 15
+# Title: Build Infrastructure-as-Code Integration Layer
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Create platform-native integration for generating and managing infrastructure alongside application code
+# Details:
+• Implement Terraform/Pulumi code generation
+• Build CloudFormation template management
+• Create platform API integrations (AWS, GCP, Azure)
+• Implement resource provisioning automation
+• Add infrastructure cost estimation
+• Build preview environment deployment system
+• Create infrastructure drift detection
+• Implement rollback and disaster recovery
+• Add infrastructure compliance checking
+• Build multi-cloud abstraction layer
+
+# Test Strategy:
+• Unit tests for IaC generation
+• Integration tests with cloud provider APIs
+• Cost estimation accuracy tests
+• Preview environment deployment tests
+• Rollback and recovery scenario tests
