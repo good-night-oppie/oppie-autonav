@@ -29,7 +29,7 @@ echo "   Domain: $DOMAIN"
 echo ""
 
 # Check if already running
-if [[ -f "$MONITOR_PID_FILE" ]] && kill -0 $(cat "$MONITOR_PID_FILE") 2>/dev/null; then
+if [[ -f "$MONITOR_PID_FILE" ]] && kill -0 "$(cat "$MONITOR_PID_FILE")" 2>/dev/null; then
     echo "⚠️ Monitor already running (PID: $(cat $MONITOR_PID_FILE))"
     echo "   Use 'kill $(cat $MONITOR_PID_FILE)' to stop"
     exit 1
@@ -90,13 +90,13 @@ start_ci_monitor() {
                 echo "$(date): CI failures detected for PR #$PR_NUMBER" 
                 
                 # Update state
-                jq --arg status "ci_failing" '.ci_status = $status | .last_check = "'$(date -Iseconds)'"' "$STATE_FILE" > "$STATE_FILE.tmp"
+                jq --arg status "ci_failing" --arg timestamp "$(date -Iseconds)" '.ci_status = $status | .last_check = $timestamp' "$STATE_FILE" > "$STATE_FILE.tmp"
                 mv "$STATE_FILE.tmp" "$STATE_FILE"
             else
                 echo "$(date): CI status OK for PR #$PR_NUMBER"
                 
                 # Update state  
-                jq --arg status "passing" '.ci_status = $status | .last_check = "'$(date -Iseconds)'"' "$STATE_FILE" > "$STATE_FILE.tmp"
+                jq --arg status "passing" --arg timestamp "$(date -Iseconds)" '.ci_status = $status | .last_check = $timestamp' "$STATE_FILE" > "$STATE_FILE.tmp"
                 mv "$STATE_FILE.tmp" "$STATE_FILE"
             fi
             
@@ -117,10 +117,14 @@ check_orchestration_status() {
     echo "📊 Orchestration Status:"
     
     if [[ -f "$STATE_FILE" ]]; then
-        local status=$(jq -r '.status' "$STATE_FILE")
-        local round=$(jq -r '.round' "$STATE_FILE")
-        local ci_status=$(jq -r '.ci_status' "$STATE_FILE")
-        local last_check=$(jq -r '.last_check' "$STATE_FILE")
+        local status
+        local round
+        local ci_status
+        local last_check
+        status=$(jq -r '.status' "$STATE_FILE")
+        round=$(jq -r '.round' "$STATE_FILE")
+        ci_status=$(jq -r '.ci_status' "$STATE_FILE")
+        last_check=$(jq -r '.last_check' "$STATE_FILE")
         
         echo "   Status: $status"
         echo "   Debate Round: $round"
@@ -130,13 +134,13 @@ check_orchestration_status() {
         echo "   ❌ No state file found"
     fi
     
-    if [[ -f "$MONITOR_PID_FILE" ]] && kill -0 $(cat "$MONITOR_PID_FILE") 2>/dev/null; then
+    if [[ -f "$MONITOR_PID_FILE" ]] && kill -0 "$(cat "$MONITOR_PID_FILE")" 2>/dev/null; then
         echo "   ✅ PR Monitor: Running (PID: $(cat $MONITOR_PID_FILE))"
     else
         echo "   ❌ PR Monitor: Not running"
     fi
     
-    if [[ -f "$CI_MONITOR_PID_FILE" ]] && kill -0 $(cat "$CI_MONITOR_PID_FILE") 2>/dev/null; then
+    if [[ -f "$CI_MONITOR_PID_FILE" ]] && kill -0 "$(cat "$CI_MONITOR_PID_FILE")" 2>/dev/null; then
         echo "   ✅ CI Monitor: Running (PID: $(cat $CI_MONITOR_PID_FILE))"
     else
         echo "   ❌ CI Monitor: Not running"
@@ -149,7 +153,8 @@ stop_orchestration() {
     echo "🛑 Stopping orchestration..."
     
     if [[ -f "$MONITOR_PID_FILE" ]]; then
-        local pid=$(cat "$MONITOR_PID_FILE")
+        local pid
+        pid=$(cat "$MONITOR_PID_FILE")
         if kill -0 $pid 2>/dev/null; then
             kill $pid
             echo "✅ PR Monitor stopped"
@@ -158,7 +163,8 @@ stop_orchestration() {
     fi
     
     if [[ -f "$CI_MONITOR_PID_FILE" ]]; then
-        local pid=$(cat "$CI_MONITOR_PID_FILE")
+        local pid
+        pid=$(cat "$CI_MONITOR_PID_FILE")
         if kill -0 $pid 2>/dev/null; then
             kill $pid
             echo "✅ CI Monitor stopped"
@@ -168,7 +174,7 @@ stop_orchestration() {
     
     # Update final state
     if [[ -f "$STATE_FILE" ]]; then
-        jq '.status = "stopped" | .stopped_at = "'$(date -Iseconds)'"' "$STATE_FILE" > "$STATE_FILE.tmp"
+        jq --arg timestamp "$(date -Iseconds)" '.status = "stopped" | .stopped_at = $timestamp' "$STATE_FILE" > "$STATE_FILE.tmp"
         mv "$STATE_FILE.tmp" "$STATE_FILE"
     fi
     

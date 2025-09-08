@@ -181,7 +181,7 @@ section "Cache and Logs"
 if [ -n "$INSTALL_DIR" ]; then
     # Check cache directory
     if [ -d "$INSTALL_DIR/cache" ]; then
-        local cache_size=$(du -sh "$INSTALL_DIR/cache" 2>/dev/null | cut -f1)
+        cache_size=$(du -sh "$INSTALL_DIR/cache" 2>/dev/null | cut -f1)
         check_pass "Cache directory exists (Size: ${cache_size:-0})"
     else
         check_warn "Cache directory missing"
@@ -190,7 +190,7 @@ if [ -n "$INSTALL_DIR" ]; then
     
     # Check logs directory
     if [ -d "$INSTALL_DIR/logs" ]; then
-        local log_count=$(find "$INSTALL_DIR/logs" -name "*.log" 2>/dev/null | wc -l)
+        log_count=$(find "$INSTALL_DIR/logs" -name "*.log" 2>/dev/null | wc -l)
         check_pass "Logs directory exists ($log_count log files)"
     else
         check_warn "Logs directory missing"
@@ -227,7 +227,7 @@ if [ -n "$INSTALL_DIR" ] && [ -f "$INSTALL_DIR/hooks/gemini-bridge.sh" ]; then
     echo "Testing Gemini bridge hook..."
     
     # Create test input
-    local test_input='{"tool_name":"Read","tool_input":{"file_path":"test.txt"}}'
+    test_input='{"tool_name":"Read","tool_input":{"file_path":"test.txt"}}'
     
     if echo "$test_input" | "$INSTALL_DIR/hooks/gemini-bridge.sh" &> /dev/null; then
         check_pass "Gemini bridge hook test passed"
@@ -257,10 +257,10 @@ fi
 section "Performance Check"
 if [ -n "$INSTALL_DIR" ]; then
     # Measure hook execution time
-    local start=$(date +%s%N)
+    start=$(date +%s%N)
     echo '{"tool_name":"test"}' | "$INSTALL_DIR/hooks/unified-automation.sh" &> /dev/null || true
-    local end=$(date +%s%N)
-    local duration=$(( (end - start) / 1000000 ))
+    end=$(date +%s%N)
+    duration=$(( (end - start) / 1000000 ))
     
     if [ $duration -lt 1000 ]; then
         check_pass "Hook execution time: ${duration}ms (excellent)"

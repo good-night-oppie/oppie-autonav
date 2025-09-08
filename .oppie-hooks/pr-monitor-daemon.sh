@@ -27,18 +27,22 @@ echo "   Checking every 30 seconds..."
 if [[ ! -f "$LAST_COMMENT_FILE" ]]; then
     LAST_ID=$(gh pr view $PR_NUMBER --json comments -q '.comments[-1].id // 0' 2>/dev/null || echo "0")
     echo "$LAST_ID" > "$LAST_COMMENT_FILE"
-    echo '{"round": 1, "status": "monitoring", "started": "'$(date -Iseconds)'"}' > "$DEBATE_STATE_FILE"
+    timestamp=$(date -Iseconds)
+    echo '{"round": 1, "status": "monitoring", "started": "'$timestamp'"}' > "$DEBATE_STATE_FILE"
     echo "$(date -Iseconds): Monitor daemon started for PR #${PR_NUMBER}" >> "$RESPONSE_LOG"
 fi
 
 monitor_pr_activity() {
-    local last_id=$(cat "$LAST_COMMENT_FILE" 2>/dev/null || echo "0")
-    local round=$(jq -r '.round // 1' "$DEBATE_STATE_FILE" 2>/dev/null || echo "1")
+    local last_id
+    last_id=$(cat "$LAST_COMMENT_FILE" 2>/dev/null || echo "0")
+    local round
+    round=$(jq -r '.round // 1' "$DEBATE_STATE_FILE" 2>/dev/null || echo "1")
     
     echo "$(date): Checking PR #${PR_NUMBER} for new activity (last_id: $last_id)"
     
     # Check for new comments since last check
-    local new_comments=$(gh api \
+    local new_comments
+    new_comments=$(gh api \
         -H "Accept: application/vnd.github+json" \
         "/repos/good-night-oppie/oppie-autonav/issues/$PR_NUMBER/comments" \
         --jq ".[] | select(.id > $last_id)" 2>/dev/null || echo "")
@@ -47,11 +51,14 @@ monitor_pr_activity() {
         echo "📝 New comments detected!"
         
         # Check if Claude responded
-        local claude_comment=$(echo "$new_comments" | jq -r 'select(.author.login == "claude" or .author.login == "github-actions" or (.body | contains("Claude")))')
+        local claude_comment
+        claude_comment=$(echo "$new_comments" | jq -r 'select(.author.login == "claude" or .author.login == "github-actions" or (.body | contains("Claude")))')
         
         if [[ -n "$claude_comment" ]]; then
-            local comment_id=$(echo "$claude_comment" | jq -r '.id' | head -1)
-            local comment_body=$(echo "$claude_comment" | jq -r '.body' | head -1)
+            local comment_id
+            comment_id=$(echo "$claude_comment" | jq -r '.id' | head -1)
+            local comment_body
+            comment_body=$(echo "$claude_comment" | jq -r '.body' | head -1)
             
             echo "✅ Claude response detected! Processing..."
             echo "$comment_id" > "$LAST_COMMENT_FILE"
@@ -67,7 +74,8 @@ monitor_pr_activity() {
         fi
         
         # Update last seen comment ID to latest
-        local latest_id=$(echo "$new_comments" | jq -r '.id' | tail -1)
+        local latest_id
+        latest_id=$(echo "$new_comments" | jq -r '.id' | tail -1)
         if [[ "$latest_id" != "null" && -n "$latest_id" ]]; then
             echo "$latest_id" > "$LAST_COMMENT_FILE"
         fi
@@ -80,8 +88,10 @@ monitor_pr_activity() {
 check_ci_status() {
     echo "🔍 Checking CI status..."
     
-    local ci_checks=$(gh pr checks $PR_NUMBER --json name,state 2>/dev/null || echo "[]")
-    local failed_checks=$(echo "$ci_checks" | jq -r '.[] | select(.state == "FAILURE") | .name' || echo "")
+    local ci_checks
+    ci_checks=$(gh pr checks $PR_NUMBER --json name,state 2>/dev/null || echo "[]")
+    local failed_checks
+    failed_checks=$(echo "$ci_checks" | jq -r '.[] | select(.state == "FAILURE") | .name' || echo "")
     
     if [[ -n "$failed_checks" ]]; then
         echo "❌ Failed CI checks: $failed_checks"
@@ -97,7 +107,8 @@ check_ci_status() {
 handle_approval() {
     local round=$1
     echo "🎉 PR approved after $round round(s)!"
-    echo '{"round": '$round', "status": "approved", "completed": "'$(date -Iseconds)'"}' > "$DEBATE_STATE_FILE"
+    timestamp=$(date -Iseconds)
+    echo '{"round": '$round', "status": "approved", "completed": "'$timestamp'"}' > "$DEBATE_STATE_FILE"
     echo "$(date -Iseconds): PR #${PR_NUMBER} approved after $round rounds" >> "$RESPONSE_LOG"
     
     # Mark task complete
@@ -106,7 +117,7 @@ handle_approval() {
 }
 
 handle_critical_review() {
-    local review_body=$1
+    local review_body="$1"
     local round=$2
     local next_round=$((round + 1))
     
@@ -114,7 +125,8 @@ handle_critical_review() {
     echo "$(date -Iseconds): Critical review received, preparing Round $next_round" >> "$RESPONSE_LOG"
     
     # Update state
-    echo '{"round": '$next_round', "status": "responding", "last_response": "'$(date -Iseconds)'"}' > "$DEBATE_STATE_FILE"
+    timestamp=$(date -Iseconds)
+    echo '{"round": '$next_round', "status": "responding", "last_response": "'$timestamp'"}' > "$DEBATE_STATE_FILE"
     
     # The response has already been posted manually in this case
     # In a full implementation, this would auto-generate and post the response
@@ -122,7 +134,7 @@ handle_critical_review() {
 }
 
 handle_standard_review() {
-    local review_body=$1  
+    local review_body="$1"  
     local round=$2
     local next_round=$((round + 1))
     
@@ -130,7 +142,8 @@ handle_standard_review() {
     echo "$(date -Iseconds): Standard review received, Round $next_round" >> "$RESPONSE_LOG"
     
     # Update state
-    echo '{"round": '$next_round', "status": "continuing", "last_response": "'$(date -Iseconds)'"}' > "$DEBATE_STATE_FILE"
+    timestamp=$(date -Iseconds)
+    echo '{"round": '$next_round', "status": "continuing", "last_response": "'$timestamp'"}' > "$DEBATE_STATE_FILE"
 }
 
 cleanup() {
