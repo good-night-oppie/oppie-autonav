@@ -358,16 +358,20 @@ func TestValidateConfig(t *testing.T) {
 		{
 			name: "negative_pre_warm_count",
 			config: VMPoolConfig{
-				MaxSize:      10,
-				PreWarmCount: -1,
+				MaxSize:        10,
+				MinAvailable:   2,
+				StartupTimeout: 30 * time.Second,
+				PreWarmCount:   -1,
 			},
 			wantErr: "pre_warm_count must be between 0 and max_size",
 		},
 		{
 			name: "pre_warm_count_exceeds_max",
 			config: VMPoolConfig{
-				MaxSize:      10,
-				PreWarmCount: 15,
+				MaxSize:        10,
+				MinAvailable:   2,
+				StartupTimeout: 30 * time.Second,
+				PreWarmCount:   15,
 			},
 			wantErr: "pre_warm_count must be between 0 and max_size",
 		},

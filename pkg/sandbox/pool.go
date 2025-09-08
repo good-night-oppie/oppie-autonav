@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/firecracker-microvm/firecracker-go-sdk"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -287,17 +288,10 @@ func validateConfig(config VMPoolConfig) error {
 	return nil
 }
 
-// generateVMID generates a unique VM identifier
+// generateVMID generates a unique VM identifier using UUID v4
 func generateVMID() string {
-	return "vm-" + time.Now().Format("20060102-150405-") + randString(8)
+	// Use UUID v4 for cryptographically secure randomness and guaranteed uniqueness
+	id := uuid.New()
+	return "vm-" + id.String()
 }
 
-// randString generates a random string of specified length
-func randString(n int) string {
-	const charset = "abcdefghijklmnopqrstuvwxyz0123456789"
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = charset[time.Now().UnixNano()%int64(len(charset))]
-	}
-	return string(b)
-}
