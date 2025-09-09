@@ -13,7 +13,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// BenchmarkHeliosCommit benchmarks actual Helios commit operations
+// BenchmarkHeliosCommit benchmarks Helios commit operations
+// NOTE: Requires helios-cli binary - will skip if not available
+// Performance measurements are REAL when Helios CLI is present
 func BenchmarkHeliosCommit(b *testing.B) {
 	if testing.Short() {
 		b.Skip("skipping benchmark in short mode")
@@ -24,6 +26,8 @@ func BenchmarkHeliosCommit(b *testing.B) {
 	if heliosPath == "" {
 		heliosPath = "helios" // Default to PATH
 	}
+	
+	b.Logf("Attempting to use Helios CLI at: %s", heliosPath)
 
 	// Create temporary work directory
 	tempDir, err := os.MkdirTemp("", "helios-bench-*")

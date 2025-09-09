@@ -304,8 +304,9 @@ func (hf *HeliosFirecrackerSandbox) PerformMCTSIteration(ctx context.Context, ac
 	hf.logger.Info("Starting MCTS iteration cycle")
 	startTime := time.Now()
 
-	// Create initial snapshot
-	initialSnapshot := fmt.Sprintf("mcts-initial-%d", time.Now().UnixNano())
+	// Create initial snapshot using UUID
+	initialSnapshotUUID := uuid.New().String()
+	initialSnapshot := fmt.Sprintf("mcts-initial-%s", initialSnapshotUUID)
 	if err := hf.CreateSnapshot(ctx, initialSnapshot); err != nil {
 		return nil, fmt.Errorf("failed to create initial snapshot: %w", err)
 	}
@@ -314,7 +315,8 @@ func (hf *HeliosFirecrackerSandbox) PerformMCTSIteration(ctx context.Context, ac
 
 	// Execute each action and capture results
 	for i, action := range actions {
-		actionSnapshot := fmt.Sprintf("mcts-action-%d-%d", i, time.Now().UnixNano())
+		actionSnapshotUUID := uuid.New().String()
+		actionSnapshot := fmt.Sprintf("mcts-action-%d-%s", i, actionSnapshotUUID)
 		
 		// Execute action
 		result, err := hf.Execute(ctx, action)

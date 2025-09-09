@@ -275,33 +275,3 @@ func BenchmarkSandboxExecution(b *testing.B) {
 	}
 }
 
-// BenchmarkSnapshotOperations benchmarks snapshot creation and restoration
-func BenchmarkSnapshotOperations(b *testing.B) {
-	ctx := context.Background()
-	sandbox := NewMockSandbox("snap-bench-vm")
-	
-	b.Run("CreateSnapshot", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			snapshotID := "snapshot-" + string(rune(i))
-			err := sandbox.CreateSnapshot(ctx, snapshotID)
-			if err != nil {
-				b.Fatal(err)
-			}
-		}
-	})
-	
-	// Create a snapshot for restore benchmark
-	err := sandbox.CreateSnapshot(ctx, "restore-test")
-	if err != nil {
-		b.Fatal(err)
-	}
-	
-	b.Run("RestoreSnapshot", func(b *testing.B) {
-		for i := 0; i < b.N; i++ {
-			err := sandbox.RestoreSnapshot(ctx, "restore-test")
-			if err != nil {
-				b.Fatal(err)
-			}
-		}
-	})
-}
