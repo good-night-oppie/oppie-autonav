@@ -1,0 +1,136 @@
+# SPDX-FileCopyrightText: 2025 Yongbing Tang and contributors
+# SPDX-License-Identifier: MIT
+
+# Optimized Lefthook configuration with performance improvements
+min_version: 1.6.0
+
+pre-commit:
+  parallel: true  # Run hooks in parallel for speed
+  commands:
+    # Fast Go checks with timeouts and optimizations
+    go-vet:
+      glob: "*.go"
+      run: |
+        if [ -n "{staged_files}" ]; then
+          echo "🔍 Checking Go files..."
+          timeout 30s go vet {staged_files}
+        fi
+      skip:
+        - merge
+        - rebase
+    
+    go-fmt-check:
+      glob: "*.go"
+      run: |
+        if [ -n "{staged_files}" ]; then
+          unformatted=$(gofmt -l {staged_files})
+          if [ -n "$unformatted" ]; then
+            echo "❌ Unformatted files detected:"
+            echo "$unformatted"
+            echo "Run: gofmt -w $unformatted"
+            exit 1
+          fi
+          echo "✅ Go formatting check passed"
+        fi
+    
+    # Ultra-fast linting for pre-commit (using fast config)
+    golangci-lint:
+      glob: "*.go"
+      run: |
+        if [ -n "{staged_files}" ]; then
+          if command -v golangci-lint > /dev/null 2>&1; then
+            echo "⚡ Quick lint check..."
+            # Use fast config for instant feedback (10s timeout for larger changesets)
+            timeout 10s golangci-lint run --config=.golangci-fast.yml --fast --new-from-rev=HEAD {staged_files}
+          else
+            echo "⚠️  golangci-lint not installed, skipping"
+          fi
+        fi
+      skip:
+        - merge
+        - rebase
+    
+    # Cached frontend checks for better performance
+    eslint:
+      glob: "*.{js,jsx,ts,tsx}"
+      run: |
+        if [ -n "{staged_files}" ]; then
+          if [ -f "frontend/package.json" ]; then
+            echo "🔍 ESLint checking files..."
+            cd frontend && npx eslint --cache --cache-location .eslintcache {staged_files}
+          else
+            echo "⚠️  frontend/package.json not found, skipping eslint"
+          fi
+        fi
+      skip:
+        - merge
+        - rebase
+    
+    prettier:
+      glob: "*.{js,jsx,ts,tsx,json,md,css,scss}"
+      run: |
+        if [ -n "{staged_files}" ]; then
+          if [ -f "frontend/package.json" ]; then
+            echo "🎨 Prettier checking files..."
+            cd frontend && npx prettier --check --cache {staged_files}
+          else
+            echo "⚠️  frontend/package.json not found, skipping prettier"
+          fi
+        fi
+      skip:
+        - merge
+        - rebase
+    
+    # Optimized SPDX check using grep -L for faster execution
+    spdx-check:
+      glob: "*.{go,js,jsx,ts,tsx}"
+      run: |
+        if [ -n "{staged_files}" ]; then
+          echo "📄 Checking SPDX headers..."
+          missing=$(grep -L "SPDX-License-Identifier" {staged_files} 2>/dev/null || true)
+          if [ -n "$missing" ]; then
+            echo "❌ Missing SPDX headers in:"
+            echo "$missing"
+            exit 1
+          fi
+          echo "✅ SPDX headers check passed"
+        fi
+
+# Lighter pre-push hooks with timeouts
+pre-push:
+  parallel: true
+  commands:
+    # Quick test run with timeout (10 minutes for slower machines/integration tests)
+    quick-test:
+      run: |
+        echo "🧪 Running quick tests..."
+        timeout 600s make test-go || {
+          echo "❌ Tests failed or timed out after 10 minutes"
+          exit 1
+        }
+    
+    # Coverage check with timeout
+    coverage-check:
+      run: |
+        echo "📊 Checking coverage thresholds..."
+        timeout 60s make cover-check-go || {
+          echo "❌ Coverage check failed or timed out"
+          exit 1
+        }
+
+# Skip verbose output for speed
+skip_output:
+  - meta
+  - summary
+  - empty_summary
+
+# Output settings for better UX
+output:
+  - execution
+  - execution_out
+  - execution_info
+  - skips
+
+# Performance settings
+settings:
+  colors: auto

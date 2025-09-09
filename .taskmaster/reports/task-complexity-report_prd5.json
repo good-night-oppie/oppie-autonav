@@ -1,0 +1,93 @@
+{
+	"meta": {
+		"generatedAt": "2025-08-15T03:07:54.631Z",
+		"tasksAnalyzed": 1,
+		"totalTasks": 19,
+		"analysisCount": 10,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 15,
+			"taskTitle": "Build Infrastructure-as-Code Integration Layer",
+			"complexityScore": 9,
+			"recommendedSubtasks": 14,
+			"expansionPrompt": "Decompose the IaC Integration Layer into distinct components (code generation engine, provider adapters, cost estimator, drift detector, preview environments, compliance checker, rollback module, multi-cloud abstraction, CI/CD hooks). Define interfaces, tech stack, security requirements, testing matrices, and delivery milestones for each component.",
+			"reasoning": "Multi-cloud support, automated provisioning, cost analysis, drift detection, compliance, and rollback demand deep provider knowledge, robust abstractions, and extensive testing, pushing complexity toward the upper end."
+		},
+		{
+			"taskId": 27,
+			"taskTitle": "Build End-to-End Integration and Deployment Pipeline",
+			"complexityScore": 8,
+			"recommendedSubtasks": 12,
+			"expansionPrompt": "Outline pipeline stages (build, test, security scan, artifact store, deploy), orchestration tooling, blue-green/canary strategies, rollback logic, environment matrix, health checks, analytics hooks, and disaster-recovery procedures. Map each stage to automation scripts and monitoring dashboards.",
+			"reasoning": "Requires orchestrating multiple components, deployment patterns, environment variants, and reliability mechanisms while integrating monitoring and analytics."
+		},
+		{
+			"taskId": 20,
+			"taskTitle": "Implement GitHub Integration and PR Automation",
+			"complexityScore": 7,
+			"recommendedSubtasks": 9,
+			"expansionPrompt": "Break down GitHub integration into API wrapper, PR creator, decision package generator, comment bot, review feedback handler, merge gatekeeper, branch-protection sync, CI/CD trigger manager, metrics collector, and testing harness.",
+			"reasoning": "Moderate complexity from multiple GitHub workflows, real-time updates, and security/permission considerations but scoped to a single provider."
+		},
+		{
+			"taskId": 19,
+			"taskTitle": "Create Agent Orchestration System",
+			"complexityScore": 9,
+			"recommendedSubtasks": 13,
+			"expansionPrompt": "Partition work into agent interface spec, registry service, capability matcher, task distributor, parallel executor, sandbox manager, health monitor, result aggregator, versioning service, performance tracker, fault-tolerant message bus, and metrics dashboard.",
+			"reasoning": "High concurrency, dynamic discovery, fault tolerance, and performance monitoring across heterogeneous AI agents introduce significant architectural and algorithmic complexity."
+		},
+		{
+			"taskId": 23,
+			"taskTitle": "Create Performance Optimization Layer",
+			"complexityScore": 8,
+			"recommendedSubtasks": 11,
+			"expansionPrompt": "Define modules for multi-tier caching, parallel executor, resource pool manager, zero-copy pipelines, connection pooling, lazy evaluation, batch optimizer, predictive prefetcher, memory pressure controller, profiler integration, and benchmarking suite.",
+			"reasoning": "Requires coordinated low-level optimizations, concurrency, and rigorous performance validation across several subsystems."
+		},
+		{
+			"taskId": 13,
+			"taskTitle": "Create Multi-Dimensional Reward Function System",
+			"complexityScore": 9,
+			"recommendedSubtasks": 12,
+			"expansionPrompt": "Split into metric interface, functional metric calculators, code quality analyzers, infrastructure cost modeler, token cost tracker, risk scorer, human-time estimator, DPO trainer, aggregation engine, visualization hooks, caching layer, and testing framework.",
+			"reasoning": "Combines diverse quantitative and learned metrics, real-time evaluation, and machine-learning–driven weight tuning, all needing high accuracy and speed."
+		},
+		{
+			"taskId": 16,
+			"taskTitle": "Create Decision Package Generation System",
+			"complexityScore": 7,
+			"recommendedSubtasks": 9,
+			"expansionPrompt": "Break down into data schema design, tree visualization UI, risk report generator, reproducible env builder, rationale docs generator, alternative path viewer, performance analyzer, security delta highlighter, versioning/storage layer, and integration tests.",
+			"reasoning": "Blends backend data assembly with rich interactive visualizations and environment provisioning, but within a bounded feature set."
+		},
+		{
+			"taskId": 26,
+			"taskTitle": "Create Documentation and Knowledge Base System",
+			"complexityScore": 6,
+			"recommendedSubtasks": 8,
+			"expansionPrompt": "Divide into doc generator, API doc extractor, tutorial builder, search/index service, versioning manager, feedback collector, multilingual pipeline, analytics dashboard, and CI hooks.",
+			"reasoning": "Primarily content generation and search; complexity arises from multilingual support and integration but lacks deep algorithmic challenges."
+		},
+		{
+			"taskId": 11,
+			"taskTitle": "Build Hot-Loop Sandbox with Firecracker/gVisor Integration",
+			"complexityScore": 9,
+			"recommendedSubtasks": 12,
+			"expansionPrompt": "Segment into tech evaluation, VM pool manager, hot-state provisioner, lifecycle controller, resource isolation enforcer, network sandbox, overlayfs integration, metrics collector, crash recovery, pool auto-scaler, security hardening, and performance benchmark suite.",
+			"reasoning": "Demands near real-time provisioning, strong isolation, low-level kernel/VM interactions, and high concurrency, driving high complexity."
+		},
+		{
+			"taskId": 21,
+			"taskTitle": "Build User Trust Interface and Visualization Dashboard",
+			"complexityScore": 7,
+			"recommendedSubtasks": 9,
+			"expansionPrompt": "Decompose into UI architecture, real-time tree visualization, decision path explorer, risk/metric dashboards, cost visualization, replay engine, feedback module, collaboration layer, theming/accessibility, and performance optimization tasks.",
+			"reasoning": "Interactive real-time visualizations and collaborative features add complexity, but leverages established frontend frameworks and patterns."
+		}
+	]
+}

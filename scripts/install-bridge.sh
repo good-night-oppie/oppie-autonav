@@ -88,7 +88,7 @@ check_prerequisites() {
     # Check required tools
     for tool in claude gemini gh jq; do
         if ! command -v $tool &> /dev/null; then
-            missing+=($tool)
+            missing+=("$tool")
             log warn "$tool not found"
         else
             log info "$tool found: $(which $tool)"
@@ -161,10 +161,12 @@ install_bridge_files() {
 configure_hooks() {
     log step "Configuring Claude hooks..."
     
-    local current_config=$(cat "$CLAUDE_SETTINGS_FILE")
+    local current_config
+    current_config=$(cat "$CLAUDE_SETTINGS_FILE")
     
     # Update configuration with both PreToolUse and PostToolUse hooks
-    local updated_config=$(echo "$current_config" | jq --arg dir "$TARGET_DIR" '
+    local updated_config
+    updated_config=$(echo "$current_config" | jq --arg dir "$TARGET_DIR" '
         # Ensure hooks object exists
         .hooks = (.hooks // {}) |
         
@@ -231,7 +233,8 @@ configure_hooks() {
 setup_github_actions() {
     log step "Setting up GitHub Actions workflows..."
     
-    local project_root=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+    local project_root
+    project_root=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
     local workflows_dir="$project_root/.github/workflows"
     
     if [ "$project_root" = "$AUTONAV_DIR" ]; then

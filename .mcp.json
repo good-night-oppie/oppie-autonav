@@ -1,0 +1,149 @@
+{
+	"mcpServers": {
+		"task-master-ai": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"--package=task-master-ai",
+				"task-master-ai"
+			],
+			"env": {
+				"ANTHROPIC_API_KEY": "YOUR_ANTHROPIC_API_KEY_HERE",
+				"PERPLEXITY_API_KEY": "YOUR_PERPLEXITY_API_KEY_HERE",
+				"OPENAI_API_KEY": "YOUR_OPENAI_API_KEY_HERE",
+				"GOOGLE_API_KEY": "YOUR_GOOGLE_API_KEY_HERE",
+				"XAI_API_KEY": "YOUR_XAI_KEY_HERE",
+				"OPENROUTER_API_KEY": "YOUR_OPENROUTER_KEY_HERE",
+				"MISTRAL_API_KEY": "YOUR_MISTRAL_KEY_HERE",
+				"AZURE_OPENAI_API_KEY": "YOUR_AZURE_KEY_HERE",
+				"OLLAMA_API_KEY": "YOUR_OLLAMA_API_KEY_HERE",
+				"VERTEX_PROJECT": "gen-lang-client-0936217565"
+			}
+		},
+		"context7": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@upstash/context7-mcp"
+			],
+			"env": {
+				"CONTEXT7_API_URL": "https://context7.com/api/v1",
+				"CONTEXT7_API_KEY": "ctx7sk-f3c9c089-7cf8-43fc-9265-e241303af173"
+			}
+		},
+		"deepwiki": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"mcp-deepwiki"
+			]
+		},
+		"smithery-ai-puppeteer": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@smithery/cli",
+				"run",
+				"@smithery-ai/puppeteer",
+				"--key",
+				"1622f046-699c-48ee-98db-75a13a2fcb2b"
+			]
+		},
+		"gemini": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"gemini-mcp-tool"
+			],
+			"env": {
+				"GOOGLE_API_KEY": "YOUR_GOOGLE_API_KEY_HERE",
+				"GEMINI_MODEL": "gemini-2.5-pro",
+				"GEMINI_AUTO_LOGIN": "true",
+				"VERTEX_AI_PROJECT_ID": "gen-lang-client-0936217565"
+			}
+		},
+		"serena": {
+			"type": "stdio",
+			"command": "uv",
+			"args": [
+				"run",
+				"--directory",
+				"/home/dev/workspace/serena",
+				"serena",
+				"start-mcp-server",
+				"--context",
+				"ide-assistant",
+				"--project",
+				"/home/dev/workspace/oppie-thunder"
+			]
+		},
+		"exa": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"exa-mcp-server"
+			],
+			"env": {
+				"EXA_API_KEY": "ec732c7d-32f2-4ca7-b3cb-7401cb910999"
+			}
+		},
+		"bmad-method-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"bmad-method-mcp"
+			]
+		},
+		"filesystem": {
+			"type": "stdio",
+			"command": "node",
+			"args": [
+				"/home/dev/workspace/mcp-servers/tier-a/mcp-reference-servers/src/filesystem/dist/index.js"
+			]
+		},
+		"memory": {
+			"type": "stdio",
+			"command": "node",
+			"args": [
+				"/home/dev/workspace/mcp-servers/tier-a/mcp-reference-servers/src/memory/dist/index.js"
+			]
+		},
+		"sequential-thinking": {
+			"type": "stdio",
+			"command": "node",
+			"args": [
+				"/home/dev/workspace/mcp-servers/tier-a/mcp-reference-servers/src/sequentialthinking/dist/index.js"
+			]
+		},
+		"git": {
+			"type": "stdio",
+			"command": "/home/dev/workspace/mcp-servers/tier-a/mcp-reference-servers/src/git/.venv/bin/python",
+			"args": [
+				"-m",
+				"mcp_server_git",
+				"--repository",
+				"/home/dev/workspace/oppie-thunder"
+			]
+		},
+		"arxiv": {
+			"type": "stdio",
+			"command": "/home/dev/.local/bin/arxiv-mcp-server",
+			"args": []
+		},
+		"wikipedia": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"wikipedia-mcp"
+			]
+		}
+	}
+}

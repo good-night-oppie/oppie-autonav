@@ -1,0 +1,78 @@
+{
+  "name": "{{PROJECT_NAME}} TDD Guard Configuration",
+  "description": "Test-Driven Development guard configuration for {{PROJECT_NAME}} project",
+  "enabled": true,
+  "testCommand": "{{TEST_COMMAND|npm test}}",
+  "testWatchCommand": "{{TEST_WATCH_COMMAND|npm run test:watch}}",
+  "testFilePatterns": [
+    "{{TEST_PATTERN_1|**/*.test.ts}}",
+    "{{TEST_PATTERN_2|**/*.test.tsx}}",
+    "{{ADDITIONAL_TEST_PATTERNS}}"
+  ],
+  "sourceFilePatterns": [
+    "{{SOURCE_PATTERN_1|src/**/*.ts}}",
+    "{{SOURCE_PATTERN_2|src/**/*.tsx}}",
+    "!src/**/*.test.ts",
+    "!src/**/*.test.tsx",
+    "{{ADDITIONAL_SOURCE_PATTERNS}}"
+  ],
+  "testDirectory": "{{TEST_DIRECTORY|tests}}",
+  "coverageThresholds": {
+    "lines": "{{COVERAGE_LINES|80}}",
+    "functions": "{{COVERAGE_FUNCTIONS|80}}",
+    "branches": "{{COVERAGE_BRANCHES|70}}",
+    "statements": "{{COVERAGE_STATEMENTS|80}}"
+  },
+  "rules": {
+    "requireTestsBeforeImplementation": true,
+    "preventUntested": true,
+    "enforceTestFirst": true,
+    "minimumTestToCodeRatio": "{{TEST_TO_CODE_RATIO|1.0}}"
+  },
+  "hooks": {
+    "preCommit": {
+      "enabled": true,
+      "commands": [
+        "{{PRECOMMIT_TYPECHECK|npm run typecheck}}",
+        "{{PRECOMMIT_LINT|npm run lint}}",
+        "{{PRECOMMIT_TEST|npm test}}"
+      ]
+    },
+    "prePush": {
+      "enabled": true,
+      "commands": [
+        "{{PREPUSH_COVERAGE|npm run test:coverage}}"
+      ]
+    }
+  },
+  "watch": {
+    "enabled": true,
+    "debounce": "{{WATCH_DEBOUNCE|300}}",
+    "clearConsole": true,
+    "runRelatedTests": true
+  },
+  "notifications": {
+    "enabled": true,
+    "onSuccess": true,
+    "onFailure": true,
+    "sound": false
+  },
+  "documentationSync": {
+    "enabled": true,
+    "targetRepo": "oppie-devkit",
+    "autoTrack": true
+  },
+  "templateVariables": {
+    "PROJECT_NAME": "Your project name",
+    "TEST_COMMAND": "Command to run tests (default: npm test)",
+    "TEST_WATCH_COMMAND": "Command for watch mode (default: npm run test:watch)",
+    "TEST_PATTERN_N": "Test file patterns",
+    "SOURCE_PATTERN_N": "Source file patterns",
+    "TEST_DIRECTORY": "Test directory location (default: tests)",
+    "COVERAGE_*": "Coverage thresholds (defaults: lines/functions 80%, branches 70%)",
+    "TEST_TO_CODE_RATIO": "Minimum ratio of test files to source files (default: 1.0)",
+    "PRECOMMIT_*": "Pre-commit hook commands",
+    "PREPUSH_*": "Pre-push hook commands",
+    "WATCH_DEBOUNCE": "Watch mode debounce in ms (default: 300)"
+  }
+}

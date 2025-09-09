@@ -1,0 +1,20 @@
+# Task ID: 9
+# Title: React PWA Frontend
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: Deliver Progressive Web App with real-time MCTS visualization, offline support, and performance optimizations.
+# Details:
+• Scaffold with Vite + React-Router + Redux Toolkit
+• WebSocket client to `/ws/progress` streaming MCTS nodes (JSON)
+• BufferedIPCClient (mirror of backend) → batching 100 msgs per 16 ms
+• VirtualScroll component (`react-window`) for node list
+• Service Worker via Workbox: precache static, dynamic caching IndexedDB (idb-keyval)
+• Web Worker `mcts.worker.ts` to offload heavy diff rendering
+• Lighthouse target: TTI<5 s, PWA score≥95
+
+# Test Strategy:
+• Vitest: 85 % coverage on reducers & components
+• Playwright E2E: create OAuth2 task flow passes
+• Web Vitals collection – assert CLS<0.1, FID<100 ms
+• Visual regression with Storybook + Chromatic

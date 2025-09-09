@@ -1,0 +1,24 @@
+# Task ID: 11
+# Title: Build Hot-Loop Sandbox with Firecracker/gVisor Integration
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Create high-performance, memory-level virtualization environment for MCTS exploration with sub-second iteration times
+# Details:
+• Evaluate and select virtualization technology (Firecracker vs gVisor vs Devcontainer)
+• Implement persistent VM pool management
+• Create hot-state container provisioning system
+• Build sandbox lifecycle management (create, execute, destroy)
+• Implement resource isolation and limits
+• Add network isolation and security sandboxing
+• Create fast file system mounting with overlayfs
+• Build sandbox metrics and monitoring
+• Implement sandbox pooling for instant availability
+• Add crash recovery and automatic restart mechanisms
+
+# Test Strategy:
+• Benchmark sandbox creation time < 100ms
+• Test resource isolation with stress tests
+• Security testing for escape prevention
+• Concurrent sandbox execution tests (100+ parallel)
+• Memory leak detection and cleanup verification
